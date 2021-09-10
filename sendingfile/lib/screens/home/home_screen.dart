@@ -17,6 +17,8 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   File? file;
+
+  List<File>? files;
   bool loadingFile = false;
 
   void showSnackBar(BuildContext context, String message,
@@ -29,7 +31,61 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+  //--------------------------------------------------
 
+  void sendMultipleFile(context, List<File> files) async {
+    setState(() {
+      loadingFile = true;
+    });
+
+    files.forEach((file) {
+      sendSingleFile(context, file);
+    });
+
+    setState(() {
+      loadingFile = false;
+    });
+  }
+  //--------------------------------------------------
+
+  void sendSingleFile(context, File file) async {
+    setState(() {
+      loadingFile = true;
+    });
+
+    var response = await Provider.of<ApiService>(context, listen: false)
+        .uploadFile(
+      http.MultipartFile.fromBytes(
+        'file',
+        file.readAsBytesSync(),
+        filename: basename(file.path),
+      ),
+    )
+        .then((response) {
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        printWarning('file inviato');
+        showSnackBar(context, 'file inviato');
+
+        setState(() {
+          // file = null;
+          loadingFile = false;
+        });
+      }
+    }).onError((error, stackTrace) {
+      printWarning('error');
+      showSnackBar(
+        context,
+        'errore file non inviato',
+        backgroundColor: Colors.red,
+      );
+      setState(() {
+        // file = null;
+        loadingFile = false;
+      });
+    });
+  }
+
+  //--------------------------------------------------
   void sendFileChopper(context) async {
     setState(() {
       loadingFile = true;
@@ -66,6 +122,7 @@ class _HomeScreenState extends State<HomeScreen> {
       });
     });
   }
+  //--------------------------------------------------
 
   void sendFileHttp(BuildContext context) async {
     setState(() {
@@ -100,6 +157,7 @@ class _HomeScreenState extends State<HomeScreen> {
       });
     });
   }
+  //--------------------------------------------------
 
   void selectionFile(context) async {
     setState(() {
@@ -107,13 +165,12 @@ class _HomeScreenState extends State<HomeScreen> {
     });
 
     FilePickerResult? result =
-        await FilePicker.platform.pickFiles().then((result) {
+        await FilePicker.platform.pickFiles(allowMultiple: true).then((result) {
       if (result != null) {
-        //setState(() {
-        //});
-
         setState(() {
-          file = File(result.files.single.path);
+          files = result.files.map((file) => File(file.path)).toList();
+          file = File(files!.first.path);
+          // var file_ = ;
           loadingFile = false;
         });
         printWarning(file);
@@ -129,6 +186,7 @@ class _HomeScreenState extends State<HomeScreen> {
       });
     });
   }
+  //--------------------------------------------------
 
   @override
   void dispose() {
@@ -154,24 +212,29 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Text('nessun file selezionato'),
       );
     } else {
-      String _nameFile = basename(file!.path);
+      //String _nameFile = basename(file!.path);
 
-      _labelNameFileWidget = Chip(
-        materialTapTargetSize: MaterialTapTargetSize.padded,
-        deleteIconColor: loadingFile ? Colors.red : Colors.black,
-        label: Container(
-          constraints: new BoxConstraints(maxWidth: 150.0),
-          child: Text(
-            _nameFile,
-            maxLines: 1,
+      _labelNameFileWidget = Wrap(children: [
+        for (int i = 0; i < files!.length; i += 1) ...[
+          Chip(
+            materialTapTargetSize: MaterialTapTargetSize.padded,
+            deleteIconColor: loadingFile ? Colors.red : Colors.black,
+            label: Container(
+              constraints: new BoxConstraints(maxWidth: 150.0),
+              child: Text(
+                basename(files![i].path),
+                maxLines: 1,
+              ),
+            ),
+            onDeleted: () => setState(() {
+              if (loadingFile == false) {
+                files!.removeAt(i);
+                //file = null;
+              }
+            }),
           ),
-        ),
-        onDeleted: () => setState(() {
-          if (loadingFile == false) {
-            file = null;
-          }
-        }),
-      );
+        ]
+      ]);
 
       sendFileState = true;
     }
