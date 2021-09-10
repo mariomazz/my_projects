@@ -1,6 +1,6 @@
 {
-    "name": "covid19",
-    "short_name": "covid19",
+    "name": "fluttercovid19",
+    "short_name": "fluttercovid19",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

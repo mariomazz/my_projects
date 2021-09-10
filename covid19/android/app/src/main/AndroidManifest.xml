@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.covid19">
+    package="com.example.fluttercovid19">
    <application
-        android:label="covid19"
+        android:label="fluttercovid19"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

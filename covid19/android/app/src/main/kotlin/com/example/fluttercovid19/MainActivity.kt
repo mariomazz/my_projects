@@ -1,4 +1,4 @@
-package com.example.covid19
+package com.example.fluttercovid19
 
 import io.flutter.embedding.android.FlutterActivity
 
