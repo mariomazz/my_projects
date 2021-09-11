@@ -21,7 +21,7 @@ abstract class ApiService extends ChopperService {
   // get file
 
   @Get(path: 'allFiles')
-  Future<Response> allFiles();
+  Future<Response<List<String>>> allFiles();
 
   // ^
 
