@@ -18,6 +18,7 @@ class NewHomeScreen extends StatefulWidget {
 
 class _NewHomeScreenState extends State<NewHomeScreen> {
   List<File> files = [];
+  bool loadingFile = false;
 
   // --------- show snackbar ---------
 
@@ -37,48 +38,42 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
   // --------- send files ---------
 
   void sendFilesChopper(context, List<File> files_) async {
-    var response = await Provider.of<ApiService>(context, listen: false)
-        .uploadFile(
-      http.MultipartFile.fromBytes(
-        'file',
-        files_[0].readAsBytesSync(),
-        filename: basename(files_[0].path),
-      ),
-    )
-        .then(
-      (response) {
+    setState(() {
+      loadingFile = true;
+    });
+
+    files_.forEach((file) async {
+      var response = await Provider.of<ApiService>(context, listen: false)
+          .uploadFile(
+        http.MultipartFile.fromBytes(
+          'file',
+          file.readAsBytesSync(),
+          filename: basename(file.path),
+        ),
+      )
+          .then((response) {
         if (response.statusCode >= 200 && response.statusCode < 300) {
           printWarning('file inviato');
+          //showSnackBar(context, 'file inviato');
 
           setState(() {
             files.clear();
+            loadingFile = false;
           });
         }
-      },
-      onError: () => setState(() => files.clear()),
-    );
-    /*  .then((response) {
-      if (response.statusCode >= 200 && response.statusCode < 300) {
-        printWarning('file inviato');
-        showSnackBar(context, 'file inviato');
-
+      }).onError((error, stackTrace) {
+        printWarning('error');
+        showSnackBar(
+          context,
+          'errore file non inviato',
+          backgroundColor: Colors.red,
+        );
         setState(() {
-          file = null;
+          files.clear();
           loadingFile = false;
         });
-      }
-    }).onError((error, stackTrace) {
-      printWarning('error');
-      showSnackBar(
-        context,
-        'errore file non inviato',
-        backgroundColor: Colors.red,
-      );
-      setState(() {
-        file = null;
-        loadingFile = false;
       });
-    }); */
+    });
   }
 
   // --------- end send files ---------
@@ -86,6 +81,9 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
   // --------- select files ---------
 
   void selectionFile(context) async {
+    setState(() {
+      loadingFile = true;
+    });
     FilePickerResult? result =
         await FilePicker.platform.pickFiles(allowMultiple: true).then(
       (result) {
@@ -98,8 +96,11 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
           printWarning('no file uploaded');
         }
       },
-      onError: () => setState(() => files.clear()),
+      //onError: () => setState(() => files.clear()),
     );
+    setState(() {
+      loadingFile = false;
+    });
   }
 
   // --------- ^ select files ---------
@@ -165,37 +166,51 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
 
   Widget body() {
     if (files.isEmpty) {
-      return Center(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Text('nessun file selezionato'),
-        ),
+      return Column(
+        children: [
+          loadingFile ? LinearProgressIndicator(color: MyColors.primary,) : Container(),
+          Expanded(
+            child: Center(
+              child: Container(
+                padding: const EdgeInsets.all(8.0),
+                child: Text('nessun file selezionato'),
+              ),
+            ),
+          ),
+        ],
       );
     }
 
-    return Center(
-      child: Wrap(children: [
-        for (int i = 0; i < files.length; i += 1) ...[
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Chip(
-              materialTapTargetSize: MaterialTapTargetSize.padded,
-              label: Container(
-                constraints: files.length > 4
-                    ? BoxConstraints(maxWidth: 70.0)
-                    : BoxConstraints(maxWidth: 150.0),
-                child: Text(
-                  basename(files[i].path),
-                  maxLines: 1,
+    return Column(
+      children: [
+        loadingFile ? LinearProgressIndicator(color:MyColors.primary,) : Container(),
+        Expanded(
+          child: Center(
+            child: Wrap(children: [
+              for (int i = 0; i < files.length; i += 1) ...[
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Chip(
+                    materialTapTargetSize: MaterialTapTargetSize.padded,
+                    label: Container(
+                      constraints: files.length > 4
+                          ? BoxConstraints(maxWidth: 70.0)
+                          : BoxConstraints(maxWidth: 150.0),
+                      child: Text(
+                        basename(files[i].path),
+                        maxLines: 1,
+                      ),
+                    ),
+                    onDeleted: () => setState(() {
+                      files.removeAt(i);
+                    }),
+                  ),
                 ),
-              ),
-              onDeleted: () => setState(() {
-                files.removeAt(i);
-              }),
-            ),
+              ]
+            ]),
           ),
-        ]
-      ]),
+        ),
+      ],
     );
   }
 }
