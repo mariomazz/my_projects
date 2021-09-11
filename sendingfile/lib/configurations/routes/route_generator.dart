@@ -1,4 +1,5 @@
 import 'package:AddFile/constants/constants.dart';
+import 'package:AddFile/screens/all%20files/all_files_screen.dart';
 import 'package:AddFile/screens/home/home_screen.dart';
 import 'package:AddFile/screens/initial%20load/initial_load.dart';
 import 'package:flutter/cupertino.dart';
@@ -16,6 +17,10 @@ class RouteGenerator {
       case '/home':
         return MaterialPageRoute(builder: (_) {
           return HomeScreen();
+        });
+      case '/allFiles':
+        return MaterialPageRoute(builder: (_) {
+          return AllFilesScreen();
         });
 
       default:

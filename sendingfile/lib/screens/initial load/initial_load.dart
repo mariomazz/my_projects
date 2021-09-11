@@ -9,7 +9,7 @@ class InitialLoad extends StatelessWidget {
   Widget build(BuildContext context) {
     return FutureBuilder(
         future: Future.delayed(
-          const Duration(seconds: 3),
+          const Duration(milliseconds: 1500),
           () => Navigator.of(context).pushNamed('/home'),
         ),
         builder: (context, snapshot) {

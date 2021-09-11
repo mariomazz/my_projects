@@ -1,17 +1,29 @@
+import 'dart:io';
+
 import 'package:chopper/chopper.dart';
 import 'package:http/http.dart' as http;
 
 part 'apiservice.chopper.dart';
 
-@ChopperApi(baseUrl: 'receive-file')
+@ChopperApi(baseUrl: '/')
 abstract class ApiService extends ChopperService {
-//send files to server
-
-  @Post(headers: {"Content-Type": "application/x-www-form-urlencoded"})
+  // send file server
+  @Post(
+    headers: {"Content-Type": "application/x-www-form-urlencoded"},
+    path: 'receive-file',
+  )
   @multipart
   Future<Response> uploadFile(
     @PartFile("file") http.MultipartFile file,
   );
+  // ^
+
+  // get file
+
+  @Get(path: 'allFiles')
+  Future<Response> allFiles();
+
+  // ^
 
   static ApiService create() {
     final client = ChopperClient(

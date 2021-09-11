@@ -128,6 +128,20 @@ class _HomeScreenState extends State<HomeScreen> {
             'sending file',
             style: TextStyle(color: Colors.black),
           ),
+          actions: [
+            Container(
+              margin: EdgeInsets.symmetric(horizontal: 10),
+              child: IconButton(
+                splashRadius: 25,
+                splashColor: Colors.black.withOpacity(0.5),
+                icon: Icon(
+                  FontAwesomeIcons.folderOpen,
+                  color: Colors.black,
+                ),
+                onPressed: () => Navigator.of(context).pushNamed('/allFiles'),
+              ),
+            ),
+          ],
         ),
         body: body(),
         floatingActionButton: Padding(
