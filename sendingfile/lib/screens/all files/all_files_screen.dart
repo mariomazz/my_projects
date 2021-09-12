@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:AddFile/constants/constants.dart';
+import 'package:AddFile/models/my%20file/my_file.dart';
 import 'package:AddFile/services/apiservice/apiservice.dart';
 import 'package:chopper/chopper.dart';
 import 'package:flutter/material.dart';
@@ -14,9 +15,9 @@ class AllFilesScreen extends StatefulWidget {
 }
 
 class _AllFilesScreenState extends State<AllFilesScreen> {
-  Future<Response<List<String>>>? requestFiles;
+  Future<Response>? requestFiles;
 
-  List<String> files = [];
+  List<MyFile> files = [];
 
   List<double> widthChips = [];
 
@@ -26,7 +27,7 @@ class _AllFilesScreenState extends State<AllFilesScreen> {
     });
   }
 
-  Future<Response<List<String>>> updateAndGetFiles() async {
+  Future<Response> updateAndGetFiles() async {
     return await Provider.of<ApiService>(context, listen: false).allFiles();
   }
 
@@ -45,44 +46,48 @@ class _AllFilesScreenState extends State<AllFilesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          elevation: 0,
-          backgroundColor: MyColors.primary,
-          automaticallyImplyLeading: true,
-          title: Text(
-            'repository file',
-            style: TextStyle(color: Colors.black),
-          ),
-          actions: [
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 10),
-              child: IconButton(
-                splashRadius: 25,
-                splashColor: Colors.black.withOpacity(0.5),
-                icon: Icon(
-                  FontAwesomeIcons.retweet,
-                  color: Colors.black,
-                ),
-                onPressed: () => refreshFiles(),
-              ),
-            ),
-          ],
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: MyColors.primary,
+        automaticallyImplyLeading: true,
+        title: Text(
+          'repository file',
+          style: TextStyle(color: Colors.black),
         ),
-        body: FutureBuilder<Response<List<String>>>(
-            future: Provider.of<ApiService>(context).allFiles(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(
-                    child:
-                        CircularProgressIndicator(color: MyColors.secondary));
-              } else if (snapshot.hasError) {
-                return Center(child: Text('errore server'));
-              }
-              files = List.from(json.decode(snapshot.data!.bodyString));
-              for (int i = 0; i < files.length; i += 1) {
-                widthChips..add(75.0);
-              }
+        actions: [
+          Container(
+            margin: EdgeInsets.symmetric(horizontal: 10),
+            child: IconButton(
+              splashRadius: 25,
+              splashColor: Colors.black.withOpacity(0.5),
+              icon: Icon(
+                FontAwesomeIcons.retweet,
+                color: Colors.black,
+              ),
+              onPressed: () => refreshFiles(),
+            ),
+          ),
+        ],
+      ),
+      body: FutureBuilder<Response>(
+          future: Provider.of<ApiService>(context).allFiles(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(
+                  child: CircularProgressIndicator(color: MyColors.secondary));
+            } else if (snapshot.hasError) {
+              return Center(child: Text('errore server + ${snapshot.error}'));
+            }
 
+            final List response = json.decode(snapshot.data!.bodyString);
+
+            files = response.map((file) => MyFile.fromJson(file)).toList();
+
+            for (int i = 0; i < files.length; i += 1) {
+              widthChips..add(75.0);
+            }
+
+            if (files.isNotEmpty) {
               return Wrap(children: [
                 for (int i = 0; i < files.length; i += 1) ...[
                   Padding(
@@ -100,7 +105,7 @@ class _AllFilesScreenState extends State<AllFilesScreen> {
                             constraints:
                                 BoxConstraints(maxWidth: widthChips[i]),
                             child: Text(
-                              files[i],
+                              files[i].name,
                               maxLines: 1,
                             ),
                           ),
@@ -108,47 +113,63 @@ class _AllFilesScreenState extends State<AllFilesScreen> {
                         ),
                         GestureDetector(
                           onTap: () => setState(() {
-                            if (widthChips[i] == 320.0) {
+                            if (widthChips[i] == 300.0) {
                               widthChips[i] = 75.0;
                             } else {
-                              widthChips[i] = 320.0;
+                              widthChips[i] = 300.0;
                             }
                           }),
                           child: Container(
                             margin: EdgeInsets.symmetric(horizontal: 5),
                             child: Icon(
-                              widthChips[i] == 320.0
+                              widthChips[i] == 300.0
                                   ? FontAwesomeIcons.minus
                                   : FontAwesomeIcons.plus,
                               size: 18,
-                              color: widthChips[i] == 320.0
+                              color: widthChips[i] == 300.0
                                   ? Colors.red.withOpacity(0.5)
                                   : Colors.green.withOpacity(0.5),
                             ),
                           ),
                         ),
+                        widthChips[i] == 300.0
+                            ? Container(
+                                margin: EdgeInsets.symmetric(horizontal: 5),
+                                child: Icon(
+                                  FontAwesomeIcons.fileDownload,
+                                  size: 18,
+                                  color: Colors.green.withOpacity(0.5),
+                                ),
+                              )
+                            : Container(),
                       ],
                     ),
                   ),
                 ]
               ]);
-            }),
-        floatingActionButton: Padding(
-          padding: const EdgeInsets.all(18.0),
-          child: ElevatedButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            child: Icon(
-              FontAwesomeIcons.plus,
-              color: Colors.black,
-            ),
-            style: ElevatedButton.styleFrom(
-              primary: MyColors.secondary,
-              shape: CircleBorder(),
-              padding: EdgeInsets.all(15),
-            ),
+            } else {
+              return Center(
+                child: Text('files.toString()'),
+              );
+            }
+          }),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.all(18.0),
+        child: ElevatedButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: Icon(
+            FontAwesomeIcons.plus,
+            color: Colors.black,
           ),
-        ));
+          style: ElevatedButton.styleFrom(
+            primary: MyColors.secondary,
+            shape: CircleBorder(),
+            padding: EdgeInsets.all(15),
+          ),
+        ),
+      ),
+    );
   }
 }

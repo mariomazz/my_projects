@@ -30,9 +30,9 @@ class _$ApiService extends ApiService {
   }
 
   @override
-  Future<Response<List<String>>> allFiles() {
+  Future<Response<dynamic>> allFiles() {
     final $url = '/allFiles';
     final $request = Request('GET', $url, client.baseUrl);
-    return client.send<List<String>, String>($request);
+    return client.send<dynamic, dynamic>($request);
   }
 }
