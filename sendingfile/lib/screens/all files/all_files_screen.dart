@@ -1,9 +1,16 @@
+import 'dart:isolate';
+import 'dart:ui';
+
 import 'package:AddFile/constants/constants.dart';
+import 'package:AddFile/main.dart';
 import 'package:AddFile/models/my%20file/my_file.dart';
 import 'package:AddFile/services/apiservice/apiservice.dart';
 import 'package:chopper/chopper.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
 class AllFilesScreen extends StatefulWidget {
@@ -21,6 +28,25 @@ class _AllFilesScreenState extends State<AllFilesScreen> {
   List<double> widthChips = [];
   double maxWidthChips = 240.0;
 
+  // download file
+
+  void downloadFile(String nameFile) async {
+    final status = await Permission.storage.request();
+
+    if (status.isGranted) {
+      final baseStorage = await getExternalStorageDirectory();
+      final id = await FlutterDownloader.enqueue(
+        url: 'http://homeserver-mario.ddns.net:3000/file/',
+        savedDir: baseStorage!.path,
+        fileName: nameFile,
+      );
+    } else {
+      printWarning('no permission');
+    }
+  }
+
+  //end download file
+
   Future refreshFiles() async {
     setState(() {
       requestFiles = updateAndGetFiles();
@@ -36,11 +62,34 @@ class _AllFilesScreenState extends State<AllFilesScreen> {
     super.dispose();
   }
 
+  int progress = 0;
+  ReceivePort recievePort = new ReceivePort();
+
   @override
   void initState() {
     requestFiles = updateAndGetFiles();
 
+    //download file
+
+    IsolateNameServer.registerPortWithName(
+        recievePort.sendPort, 'downloadfile');
+
+    recievePort.listen(
+      (message) => setState(() {
+        progress = message;
+      }),
+    );
+
+    FlutterDownloader.registerCallback(downloadCalllback);
+
+    //end download file
+
     super.initState();
+  }
+
+  static downloadCalllback(id, status, progress) {
+    SendPort? sendPort = IsolateNameServer.lookupPortByName('downloadfile');
+    sendPort!.send(progress);
   }
 
   @override
@@ -131,12 +180,15 @@ class _AllFilesScreenState extends State<AllFilesScreen> {
                           ),
                         ),
                         widthChips[i] == maxWidthChips
-                            ? Container(
-                                margin: EdgeInsets.symmetric(horizontal: 5),
-                                child: Icon(
-                                  FontAwesomeIcons.fileDownload,
-                                  size: 18,
-                                  color: Colors.green.withOpacity(0.5),
+                            ? GestureDetector(
+                                onTap: () => downloadFile(files![i].name),
+                                child: Container(
+                                  margin: EdgeInsets.symmetric(horizontal: 5),
+                                  child: Icon(
+                                    FontAwesomeIcons.fileDownload,
+                                    size: 18,
+                                    color: Colors.green.withOpacity(0.5),
+                                  ),
                                 ),
                               )
                             : Container(),
