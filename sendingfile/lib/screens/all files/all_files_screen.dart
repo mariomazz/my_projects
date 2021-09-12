@@ -1,10 +1,7 @@
 import 'dart:convert';
-
 import 'package:AddFile/constants/constants.dart';
-import 'package:AddFile/main.dart';
 import 'package:AddFile/services/apiservice/apiservice.dart';
 import 'package:chopper/chopper.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
@@ -22,31 +19,6 @@ class _AllFilesScreenState extends State<AllFilesScreen> {
   List<String> files = [];
 
   List<double> widthChips = [];
-
-/*   void addFiles(context) async {
-    setState(() {
-      loadingFile = true;
-    });
-    FilePickerResult? result =
-        await FilePicker.platform.pickFiles(allowMultiple: true).then(
-      (result) {
-        if (result != null) {
-          List<String> selectedFiles =
-              result.files.map((file) => file.path).toList();
-
-          setState(() {
-            files.addAll(selectedFiles);
-          });
-          printWarning(files);
-        } else {
-          printWarning('no file uploaded');
-        }
-      },
-    );
-    setState(() {
-      loadingFile = false;
-    });
-  } */
 
   Future refreshFiles() async {
     setState(() {
