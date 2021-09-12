@@ -1,6 +1,7 @@
 import 'package:AddFile/configurations/routes/route_generator.dart';
 import 'package:AddFile/services/apiservice/apiservice.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 
@@ -13,7 +14,11 @@ void _setupLogging() {
 }
 // end interceptors
 
-void main() {
+void main() async {
+  // download file
+  WidgetsFlutterBinding.ensureInitialized();
+  await FlutterDownloader.initialize();
+  // end download file
   _setupLogging();
   runApp(SendFileServer());
 }

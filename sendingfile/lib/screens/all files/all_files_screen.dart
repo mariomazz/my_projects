@@ -14,11 +14,12 @@ class AllFilesScreen extends StatefulWidget {
 }
 
 class _AllFilesScreenState extends State<AllFilesScreen> {
-  Future<Response>? requestFiles;
+  Future<Response<List<MyFile>>>? requestFiles;
 
   List<MyFile>? files = [];
 
   List<double> widthChips = [];
+  double maxWidthChips = 240.0;
 
   Future refreshFiles() async {
     setState(() {
@@ -26,7 +27,7 @@ class _AllFilesScreenState extends State<AllFilesScreen> {
     });
   }
 
-  Future<Response> updateAndGetFiles() async {
+  Future<Response<List<MyFile>>> updateAndGetFiles() async {
     return await Provider.of<ApiService>(context, listen: false).allFiles();
   }
 
@@ -69,7 +70,7 @@ class _AllFilesScreenState extends State<AllFilesScreen> {
         ],
       ),
       body: FutureBuilder<Response<List<MyFile>>>(
-          future: Provider.of<ApiService>(context).allFiles(),
+          future: requestFiles,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(
@@ -110,26 +111,26 @@ class _AllFilesScreenState extends State<AllFilesScreen> {
                         ),
                         GestureDetector(
                           onTap: () => setState(() {
-                            if (widthChips[i] == 300.0) {
+                            if (widthChips[i] == maxWidthChips) {
                               widthChips[i] = 75.0;
                             } else {
-                              widthChips[i] = 300.0;
+                              widthChips[i] = maxWidthChips;
                             }
                           }),
                           child: Container(
                             margin: EdgeInsets.symmetric(horizontal: 5),
                             child: Icon(
-                              widthChips[i] == 300.0
+                              widthChips[i] == maxWidthChips
                                   ? FontAwesomeIcons.minus
                                   : FontAwesomeIcons.plus,
                               size: 18,
-                              color: widthChips[i] == 300.0
+                              color: widthChips[i] == maxWidthChips
                                   ? Colors.red.withOpacity(0.5)
                                   : Colors.green.withOpacity(0.5),
                             ),
                           ),
                         ),
-                        widthChips[i] == 300.0
+                        widthChips[i] == maxWidthChips
                             ? Container(
                                 margin: EdgeInsets.symmetric(horizontal: 5),
                                 child: Icon(
