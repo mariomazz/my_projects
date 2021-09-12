@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:AddFile/models/my%20file/my_file.dart';
+import 'package:AddFile/services/apiservice/myfile_converter.dart';
 import 'package:chopper/chopper.dart';
 import 'package:http/http.dart' as http;
 
@@ -17,7 +19,7 @@ abstract class ApiService extends ChopperService {
   );
 
   @Get(path: 'allFiles')
-  Future<Response> allFiles();
+  Future<Response<List<MyFile>>> allFiles();
 
   static ApiService create() {
     final client = ChopperClient(
@@ -25,7 +27,8 @@ abstract class ApiService extends ChopperService {
       services: [
         _$ApiService(),
       ],
-      converter: JsonConverter(),
+      converter: MyFileConverter(),
+      errorConverter: JsonConverter(),
       interceptors: [
         HttpLoggingInterceptor(),
       ],

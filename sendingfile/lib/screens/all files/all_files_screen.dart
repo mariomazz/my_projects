@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:AddFile/constants/constants.dart';
 import 'package:AddFile/models/my%20file/my_file.dart';
 import 'package:AddFile/services/apiservice/apiservice.dart';
@@ -17,7 +16,7 @@ class AllFilesScreen extends StatefulWidget {
 class _AllFilesScreenState extends State<AllFilesScreen> {
   Future<Response>? requestFiles;
 
-  List<MyFile> files = [];
+  List<MyFile>? files = [];
 
   List<double> widthChips = [];
 
@@ -69,7 +68,7 @@ class _AllFilesScreenState extends State<AllFilesScreen> {
           ),
         ],
       ),
-      body: FutureBuilder<Response>(
+      body: FutureBuilder<Response<List<MyFile>>>(
           future: Provider.of<ApiService>(context).allFiles(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
@@ -79,17 +78,15 @@ class _AllFilesScreenState extends State<AllFilesScreen> {
               return Center(child: Text('errore server + ${snapshot.error}'));
             }
 
-            final List response = json.decode(snapshot.data!.bodyString);
+            files = snapshot.data!.body;
 
-            files = response.map((file) => MyFile.fromJson(file)).toList();
-
-            for (int i = 0; i < files.length; i += 1) {
+            for (int i = 0; i < files!.length; i += 1) {
               widthChips..add(75.0);
             }
 
-            if (files.isNotEmpty) {
+            if (files!.isNotEmpty) {
               return Wrap(children: [
-                for (int i = 0; i < files.length; i += 1) ...[
+                for (int i = 0; i < files!.length; i += 1) ...[
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8),
                     child: Row(
@@ -105,7 +102,7 @@ class _AllFilesScreenState extends State<AllFilesScreen> {
                             constraints:
                                 BoxConstraints(maxWidth: widthChips[i]),
                             child: Text(
-                              files[i].name,
+                              files![i].name,
                               maxLines: 1,
                             ),
                           ),
