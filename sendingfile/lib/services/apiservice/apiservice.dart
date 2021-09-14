@@ -23,7 +23,8 @@ abstract class ApiService extends ChopperService {
 
   static ApiService create() {
     final client = ChopperClient(
-      baseUrl: 'http://homeserver-mario.ddns.net:3000',
+
+      baseUrl: 'http://192.168.1.13:3000',
       services: [
         _$ApiService(),
       ],

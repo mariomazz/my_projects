@@ -35,8 +35,10 @@ class _AllFilesScreenState extends State<AllFilesScreen> {
 
     if (status.isGranted) {
       final baseStorage = await getExternalStorageDirectory();
-      final id = await FlutterDownloader.enqueue(
-        url: 'http://homeserver-mario.ddns.net:3000/file/',
+      await FlutterDownloader.enqueue(
+        url: 'http://192.168.1.13:3000/file/file.pdf',
+        /*  url:
+            'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4', */
         savedDir: baseStorage!.path,
         fileName: nameFile,
       );
