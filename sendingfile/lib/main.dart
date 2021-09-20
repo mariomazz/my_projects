@@ -1,21 +1,28 @@
 import 'package:AddFile/configurations/routes/route_generator.dart';
 import 'package:AddFile/services/apiservice/apiservice.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 
 // interceptors
+
+// end interceptors
+
+void main() async {
+  // download file
+  WidgetsFlutterBinding.ensureInitialized();
+  await FlutterDownloader.initialize();
+  // end download file
+  _setupLogging();
+  runApp(SendFileServer());
+}
+
 void _setupLogging() {
   Logger.root.level = Level.ALL;
   Logger.root.onRecord.listen((rec) {
     printWarning('${rec.level.name}: ${rec.time}: ${rec.message}');
   });
-}
-// end interceptors
-
-void main() {
-  _setupLogging();
-  runApp(SendFileServer());
 }
 
 class SendFileServer extends StatelessWidget {
@@ -38,3 +45,16 @@ class SendFileServer extends StatelessWidget {
 void printWarning(text) {
   print('\x1B[33m$text\x1B[0m');
 }
+
+
+
+void showSnackBar(BuildContext context, String message,
+      {Color? backgroundColor}) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: backgroundColor,
+        duration: Duration(seconds: 1),
+        content: Text('$message'),
+      ),
+    );
+  }

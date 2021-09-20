@@ -18,7 +18,7 @@ class _$ApiService extends ApiService {
 
   @override
   Future<Response<dynamic>> uploadFile(http.MultipartFile file) {
-    final $url = 'receive-file';
+    final $url = '/receive-file';
     final $headers = {
       'Content-Type': 'application/x-www-form-urlencoded',
     };
@@ -27,5 +27,25 @@ class _$ApiService extends ApiService {
     final $request = Request('POST', $url, client.baseUrl,
         parts: $parts, multipart: true, headers: $headers);
     return client.send<dynamic, dynamic>($request);
+  }
+
+  @override
+  Future<Response<dynamic>> deleteFile(Map<String, dynamic> body) {
+    final $url = '/delete-file';
+    final $headers = {
+      'Content-type': 'application/json; charset=UTF-8',
+    };
+
+    final $body = body;
+    final $request =
+        Request('POST', $url, client.baseUrl, body: $body, headers: $headers);
+    return client.send<dynamic, dynamic>($request);
+  }
+
+  @override
+  Future<Response<List<MyFile>>> allFiles() {
+    final $url = '/allFiles';
+    final $request = Request('GET', $url, client.baseUrl);
+    return client.send<List<MyFile>, MyFile>($request);
   }
 }
