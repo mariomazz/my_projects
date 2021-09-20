@@ -1,6 +1,5 @@
 import 'dart:isolate';
 import 'dart:ui';
-
 import 'package:AddFile/constants/constants.dart';
 import 'package:AddFile/main.dart';
 import 'package:AddFile/models/my%20file/my_file.dart';
@@ -21,6 +20,10 @@ class AllFilesScreen extends StatefulWidget {
 }
 
 class _AllFilesScreenState extends State<AllFilesScreen> {
+  String? progress;
+
+  String? fileName;
+
   Future<Response<List<MyFile>>>? requestFiles;
 
   List<MyFile>? files = [];
@@ -28,23 +31,42 @@ class _AllFilesScreenState extends State<AllFilesScreen> {
   List<double> widthChips = [];
   double maxWidthChips = 240.0;
 
+  void deleteFile(
+    String nameFile,
+    int index,
+  ) async {
+    var response = await Provider.of<ApiService>(context, listen: false)
+        .deleteFile({'key': nameFile});
+    if (response.bodyString == 'success') {
+      showSnackBar(context, 'file cancellato');
+    } else if (response.bodyString == 'error') {
+      showSnackBar(context, 'file non cancellato', backgroundColor: Colors.red);
+    }
+
+    await refreshFiles();
+  }
+
   // download file
 
   void downloadFile(String nameFile) async {
     final status = await Permission.storage.request();
 
     if (status.isGranted) {
-      final baseStorage = await getExternalStorageDirectory();
+      final baseStorage =
+          await getExternalStorageDirectories(type: StorageDirectory.documents);
       await FlutterDownloader.enqueue(
-        url: 'http://192.168.1.13:3000/file/file.pdf',
-        /*  url:
-            'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4', */
-        savedDir: baseStorage!.path,
+        url: 'http://192.168.1.28:3000/file/' + nameFile,
+        savedDir: baseStorage![0].path,
         fileName: nameFile,
       );
     } else {
       printWarning('no permission');
     }
+  }
+
+  static downloadCalllback(id, status, progress) {
+    SendPort? sendPort = IsolateNameServer.lookupPortByName('downloadfile');
+    sendPort!.send(progress);
   }
 
   //end download file
@@ -59,12 +81,7 @@ class _AllFilesScreenState extends State<AllFilesScreen> {
     return await Provider.of<ApiService>(context, listen: false).allFiles();
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
-  int progress = 0;
+  int fileprogress = 0;
   ReceivePort recievePort = new ReceivePort();
 
   @override
@@ -89,9 +106,9 @@ class _AllFilesScreenState extends State<AllFilesScreen> {
     super.initState();
   }
 
-  static downloadCalllback(id, status, progress) {
-    SendPort? sendPort = IsolateNameServer.lookupPortByName('downloadfile');
-    sendPort!.send(progress);
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
@@ -137,71 +154,73 @@ class _AllFilesScreenState extends State<AllFilesScreen> {
             }
 
             if (files!.isNotEmpty) {
-              return Wrap(children: [
-                for (int i = 0; i < files!.length; i += 1) ...[
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Chip(
-                          deleteIcon: Icon(
-                            FontAwesomeIcons.trash,
-                            size: 15,
+              return ListView(children: [
+                Wrap(children: [
+                  for (int i = 0; i < files!.length; i += 1) ...[
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Chip(
+                            deleteIcon: Icon(
+                              FontAwesomeIcons.trash,
+                              size: 15,
+                            ),
+                            materialTapTargetSize: MaterialTapTargetSize.padded,
+                            label: Container(
+                              constraints:
+                                  BoxConstraints(maxWidth: widthChips[i]),
+                              child: Text(
+                                files![i].name,
+                                maxLines: 1,
+                              ),
+                            ),
+                            onDeleted: () => deleteFile(files![i].name, i),
                           ),
-                          materialTapTargetSize: MaterialTapTargetSize.padded,
-                          label: Container(
-                            constraints:
-                                BoxConstraints(maxWidth: widthChips[i]),
-                            child: Text(
-                              files![i].name,
-                              maxLines: 1,
+                          GestureDetector(
+                            onTap: () => setState(() {
+                              if (widthChips[i] == maxWidthChips) {
+                                widthChips[i] = 75.0;
+                              } else {
+                                widthChips[i] = maxWidthChips;
+                              }
+                            }),
+                            child: Container(
+                              margin: EdgeInsets.symmetric(horizontal: 5),
+                              child: Icon(
+                                widthChips[i] == maxWidthChips
+                                    ? FontAwesomeIcons.minus
+                                    : FontAwesomeIcons.plus,
+                                size: 18,
+                                color: widthChips[i] == maxWidthChips
+                                    ? Colors.red.withOpacity(0.5)
+                                    : Colors.green.withOpacity(0.5),
+                              ),
                             ),
                           ),
-                          onDeleted: () {},
-                        ),
-                        GestureDetector(
-                          onTap: () => setState(() {
-                            if (widthChips[i] == maxWidthChips) {
-                              widthChips[i] = 75.0;
-                            } else {
-                              widthChips[i] = maxWidthChips;
-                            }
-                          }),
-                          child: Container(
-                            margin: EdgeInsets.symmetric(horizontal: 5),
-                            child: Icon(
-                              widthChips[i] == maxWidthChips
-                                  ? FontAwesomeIcons.minus
-                                  : FontAwesomeIcons.plus,
-                              size: 18,
-                              color: widthChips[i] == maxWidthChips
-                                  ? Colors.red.withOpacity(0.5)
-                                  : Colors.green.withOpacity(0.5),
-                            ),
-                          ),
-                        ),
-                        widthChips[i] == maxWidthChips
-                            ? GestureDetector(
-                                onTap: () => downloadFile(files![i].name),
-                                child: Container(
-                                  margin: EdgeInsets.symmetric(horizontal: 5),
-                                  child: Icon(
-                                    FontAwesomeIcons.fileDownload,
-                                    size: 18,
-                                    color: Colors.green.withOpacity(0.5),
+                          widthChips[i] == maxWidthChips
+                              ? GestureDetector(
+                                  onTap: () => downloadFile(files![i].name),
+                                  child: Container(
+                                    margin: EdgeInsets.symmetric(horizontal: 5),
+                                    child: Icon(
+                                      FontAwesomeIcons.fileDownload,
+                                      size: 18,
+                                      color: Colors.green.withOpacity(0.5),
+                                    ),
                                   ),
-                                ),
-                              )
-                            : Container(),
-                      ],
+                                )
+                              : Container(),
+                        ],
+                      ),
                     ),
-                  ),
-                ]
+                  ]
+                ]),
               ]);
             } else {
               return Center(
-                child: Text('files.toString()'),
+                child: Text('nessun file presente - aggiungilo'),
               );
             }
           }),

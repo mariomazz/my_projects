@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:AddFile/models/my%20file/my_file.dart';
 import 'package:AddFile/services/apiservice/myfile_converter.dart';
 import 'package:chopper/chopper.dart';
@@ -18,13 +17,22 @@ abstract class ApiService extends ChopperService {
     @PartFile("file") http.MultipartFile file,
   );
 
+  @Post(
+    headers: {
+      'Content-type': 'application/json; charset=UTF-8',
+    },
+    path: 'delete-file',
+  )
+  Future<Response> deleteFile(
+    @Body() Map<String, dynamic> body,
+  );
+
   @Get(path: 'allFiles')
   Future<Response<List<MyFile>>> allFiles();
 
   static ApiService create() {
     final client = ChopperClient(
-
-      baseUrl: 'http://192.168.1.13:3000',
+      baseUrl: 'http://homeserver-mario.ddns.net:3000',
       services: [
         _$ApiService(),
       ],

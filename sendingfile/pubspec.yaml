@@ -38,6 +38,7 @@ dependencies:
   flowder: ^0.2.0
   path_provider: ^2.0.3
   flutter_downloader: ^1.7.0
+  progress_dialog: ^1.2.4
 
 json_annotation:
 

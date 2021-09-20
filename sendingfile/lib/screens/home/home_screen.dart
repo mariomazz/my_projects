@@ -22,17 +22,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   // --------- show snackbar ---------
 
-  void showSnackBar(BuildContext context, String message,
-      {Color? backgroundColor}) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        backgroundColor: backgroundColor,
-        duration: Duration(seconds: 1),
-        content: Text('$message'),
-      ),
-    );
-  }
-
   // --------- end show snackbar ---------
 
   // --------- send files ---------
