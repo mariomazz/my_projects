@@ -1,6 +1,6 @@
 import 'dart:isolate';
 import 'dart:ui';
-import 'package:AddFile/constants/constants.dart';
+import 'package:AddFile/configurations/constants/constants.dart';
 import 'package:AddFile/main.dart';
 import 'package:AddFile/models/my%20file/my_file.dart';
 import 'package:AddFile/services/apiservice/apiservice.dart';
@@ -49,13 +49,14 @@ class _AllFilesScreenState extends State<AllFilesScreen> {
   // download file
 
   void downloadFile(String nameFile) async {
+    printWarning('$nameFile');
     final status = await Permission.storage.request();
 
     if (status.isGranted) {
       final baseStorage =
           await getExternalStorageDirectories(type: StorageDirectory.documents);
       await FlutterDownloader.enqueue(
-        url: 'http://192.168.1.28:3000/file/' + nameFile,
+        url: 'http://homeserver-mario.ddns.net:3000/file/' + nameFile,
         savedDir: baseStorage![0].path,
         fileName: nameFile,
       );

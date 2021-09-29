@@ -1,4 +1,4 @@
-import 'package:AddFile/constants/constants.dart';
+import 'package:AddFile/configurations/constants/constants.dart';
 import 'package:AddFile/widgets/shared/progress-indicator/progress_indicator.dart';
 import 'package:flutter/material.dart';
 

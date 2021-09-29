@@ -46,15 +46,13 @@ void printWarning(text) {
   print('\x1B[33m$text\x1B[0m');
 }
 
-
-
 void showSnackBar(BuildContext context, String message,
-      {Color? backgroundColor}) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        backgroundColor: backgroundColor,
-        duration: Duration(seconds: 1),
-        content: Text('$message'),
-      ),
-    );
-  }
+    {Color? backgroundColor}) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      backgroundColor: backgroundColor,
+      duration: Duration(seconds: 1),
+      content: Text('$message'),
+    ),
+  );
+}
