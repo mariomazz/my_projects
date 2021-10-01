@@ -5,6 +5,7 @@ import 'package:abbonamenti_studenti/ui/widgets/app%20bar/app_bar.dart';
 import 'package:abbonamenti_studenti/ui/widgets/student%20card/student_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class HomeScreen extends StatefulWidget {
   HomeScreen({Key? key}) : super(key: key);
@@ -106,14 +107,16 @@ class _HomeScreenState extends State<HomeScreen> {
                   activeStudents.sort((a, b) =>
                       a.subscriptionDate.compareTo(b.subscriptionDate));
 
-                  if (segmentedControlGroupValue == 0) {
+                  if (segmentedControlGroupValue == 0 &&
+                      inactiveStudents.isNotEmpty) {
                     return Expanded(
                       child: listStudents(
                         context,
                         inactiveStudents,
                       ),
                     );
-                  } else if (segmentedControlGroupValue == 1) {
+                  } else if (segmentedControlGroupValue == 1 &&
+                      activeStudents.isNotEmpty) {
                     return Expanded(
                       child: listStudents(
                         context,
@@ -121,15 +124,49 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     );
                   }
-                  return Center(
-                    child: Text('errore'),
+
+                  if (inactiveStudents.isEmpty) {
+                    return Expanded(
+                      child: Center(
+                        child: Icon(
+                          FontAwesomeIcons.check,
+                          color: Colors.lightGreen,
+                          size: MyIconSize.bigIcon,
+                        ),
+                      ),
+                    );
+                  }
+
+                  if (activeStudents.isEmpty) {
+                    return Expanded(
+                      child: Center(
+                        child: Icon(
+                          FontAwesomeIcons.userClock,
+                          color: Colors.grey,
+                          size: MyIconSize.bigIcon,
+                        ),
+                      ),
+                    );
+                  }
+
+                  return Expanded(
+                    child: Center(
+                      child: Text(
+                        'errore',
+                        style: TextStyle(
+                          fontSize: MyFontSize.primaryText,
+                        ),
+                      ),
+                    ),
                   );
                 }
-                return Center(
-                  child: Text(
-                    'errore non definito',
-                    style: TextStyle(
-                      fontSize: MyFontSize.primaryText,
+                return Expanded(
+                  child: Center(
+                    child: Text(
+                      'errore non definito',
+                      style: TextStyle(
+                        fontSize: MyFontSize.primaryText,
+                      ),
                     ),
                   ),
                 );
@@ -144,8 +181,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 );
               }
 
-              return Center(
-                child: CircularProgressIndicator(),
+              return Expanded(
+                child: Center(
+                  child: CircularProgressIndicator(
+                    color: MyColors.colorFour,
+                  ),
+                ),
               );
             },
           ),
@@ -156,6 +197,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget listStudents(context, List<Student> students) {
     return ListView.builder(
+      physics: BouncingScrollPhysics(),
       itemBuilder: (context, index) {
         return Padding(
           padding: const EdgeInsets.all(12.0),

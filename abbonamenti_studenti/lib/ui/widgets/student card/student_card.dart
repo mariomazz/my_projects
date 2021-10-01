@@ -8,66 +8,69 @@ class StudentCard extends StatelessWidget {
   final Student student;
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(12.0),
-      decoration: BoxDecoration(
-        color: Colors.grey.shade300.withOpacity(0.5),
-        borderRadius: BorderRadius.all(
-          Radius.circular(20),
+    return GestureDetector(
+      onTap: () => Navigator.of(context).pushNamed('/detail/student'),
+      child: Container(
+        padding: const EdgeInsets.all(12.0),
+        decoration: BoxDecoration(
+          color: Colors.grey.shade300.withOpacity(0.5),
+          borderRadius: BorderRadius.all(
+            Radius.circular(20),
+          ),
         ),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            flex:2,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                '${student.name}\n${student.surname}',
-                maxLines: 2,
-                style: TextStyle(
-                  fontSize: MyFontSize.secondaryText,
+        child: Row(
+          children: [
+            Expanded(
+              flex: 2,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  '${student.name}\n${student.surname}',
+                  maxLines: 2,
+                  style: TextStyle(
+                    fontSize: MyFontSize.secondaryText,
+                  ),
                 ),
               ),
             ),
-          ),
-          Expanded(
-            flex: 2,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                '${student.placeOfResidence}\n${student.subscriptionDate}',
-                maxLines: 2,
-                style: TextStyle(
-                  fontSize: MyFontSize.secondaryText,
+            Expanded(
+              flex: 2,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  '${student.placeOfResidence}\n${student.subscriptionDate}',
+                  maxLines: 2,
+                  style: TextStyle(
+                    fontSize: MyFontSize.secondaryText,
+                  ),
                 ),
               ),
             ),
-          ),
-          student.activeSubscription
-              ? Expanded(
-                flex: 1,
-                child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Icon(
-                      FontAwesomeIcons.check,
-                      color: Colors.lightGreen,
-                      size: MyIconSize.standard,
+            student.activeSubscription
+                ? Expanded(
+                    flex: 1,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Icon(
+                        FontAwesomeIcons.check,
+                        color: Colors.lightGreen,
+                        size: MyIconSize.standard,
+                      ),
+                    ),
+                  )
+                : Expanded(
+                    flex: 1,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Icon(
+                        FontAwesomeIcons.exclamation,
+                        color: Colors.red.withOpacity(0.5),
+                        size: MyIconSize.standard,
+                      ),
                     ),
                   ),
-              )
-              : Expanded(
-                flex: 1,
-                child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Icon(
-                      FontAwesomeIcons.exclamation,
-                      color: Colors.red.withOpacity(0.5),
-                      size: MyIconSize.standard,
-                    ),
-                  ),
-              ),
-        ],
+          ],
+        ),
       ),
     );
   }

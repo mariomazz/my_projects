@@ -1,5 +1,6 @@
 import 'package:abbonamenti_studenti/configurations/constants/constants.dart';
-import 'package:abbonamenti_studenti/ui/screens/home/home_page.dart';
+import 'package:abbonamenti_studenti/ui/screens/detail%20student/detail_student.dart';
+import 'package:abbonamenti_studenti/ui/screens/home/home_screen.dart';
 import 'package:abbonamenti_studenti/ui/widgets/app%20bar/app_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -10,10 +11,17 @@ class RouteGenerator {
 
     switch (settings.name) {
       case '/':
-        return MaterialPageRoute(builder: (_) {
-          return HomeScreen();
-        });
-
+        return MaterialPageRoute(
+          builder: (_) {
+            return HomeScreen();
+          },
+        );
+      case '/detail/student':
+        return MaterialPageRoute(
+          builder: (_) {
+            return DetailStudent();
+          },
+        );
       default:
         return _errorRoute();
     }
@@ -22,7 +30,7 @@ class RouteGenerator {
   static Route<dynamic> _errorRoute() {
     return MaterialPageRoute(builder: (_) {
       return Scaffold(
-        backgroundColor:Colors.white,
+        backgroundColor: Colors.white,
         appBar: MyAppBar(
           title: const Text('error'),
           automaticallyImplyLeading: false,
