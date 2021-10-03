@@ -30,6 +30,7 @@ dependencies:
   flutter:
     sdk: flutter
   chopper: ^4.0.1
+  floor: ^1.2.0
   provider: ^6.0.0
   json_annotation:
 
@@ -37,10 +38,12 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
   font_awesome_flutter: ^9.1.0
+  uuid: ^3.0.4
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  floor_generator: ^1.2.0
   chopper_generator:
   build_runner:
   json_serializable:

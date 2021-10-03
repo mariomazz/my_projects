@@ -1,5 +1,5 @@
-import 'dart:convert';
 import 'package:abbonamenti_studenti/configurations/constants/constants.dart';
+import 'package:abbonamenti_studenti/configurations/useful%20methods/useful_methods.dart';
 import 'package:abbonamenti_studenti/models/student/student.dart';
 import 'package:abbonamenti_studenti/ui/widgets/app%20bar/app_bar.dart';
 import 'package:abbonamenti_studenti/ui/widgets/student%20card/student_card.dart';
@@ -33,164 +33,189 @@ class _HomeScreenState extends State<HomeScreen> {
   };
   // end cupertino segment control
 
-  // load students
-  Future<List<Student>> readJsonStudents(BuildContext context) async {
-    final String data = await DefaultAssetBundle.of(context)
-        .loadString("assets/file json/students.json");
-    final List jsonResult = jsonDecode(data);
-
-    final List<Student> students =
-        jsonResult.map((student) => Student.fromJson(student)).toList();
-
-    return students;
+  @override
+  void initState() {
+    super.initState();
   }
-  // end load students
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: MyAppBar(
-        title: Text(
-          'Studenti',
-          style: TextStyle(
-            fontSize: MyFontSize.primaryText,
-          ),
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topRight,
+          end: Alignment.bottomLeft,
+          stops: [0.1, 0.5, 0.7, 0.9],
+          colors: [
+            Colors.grey[100]!,
+            Colors.grey[200]!,
+            Colors.grey[300]!,
+            Colors.grey[400]!,
+          ],
         ),
-        automaticallyImplyLeading: false,
-        backgroundColor: MyColors.colorOne,
-        elevation: 0,
       ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(14.0),
-            child: CupertinoSlidingSegmentedControl(
-              groupValue: segmentedControlGroupValue,
-              children: myTabs,
-              onValueChanged: (i) {
-                setState(
-                  () {
-                    segmentedControlGroupValue = i!;
-                  },
-                );
-              },
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: MyAppBar(
+          title: Text(
+            'Studenti',
+            style: TextStyle(
+              fontSize: MyFontSize.primaryText,
             ),
           ),
-          FutureBuilder<List<Student>>(
-            future: readJsonStudents(context),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
-                final List<Student> students = snapshot.data ?? [];
-
-                if (students.isEmpty) {
-                  return Center(
-                    child: Text(
-                      'nessun elemento presente',
-                      style: TextStyle(
-                        fontSize: MyFontSize.primaryText,
-                      ),
-                    ),
+          automaticallyImplyLeading: false,
+          backgroundColor: MyColors.colorOne,
+          elevation: 0,
+          actions: [
+            InkWell(
+              onTap: () => Navigator.of(context)
+                  .pushNamed("/info")
+                  .then((value) => setState(() {})),
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 14),
+                child: Icon(FontAwesomeIcons.ellipsisV),
+              ),
+            ),
+          ],
+        ),
+        body: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(14.0),
+              child: CupertinoSlidingSegmentedControl(
+                groupValue: segmentedControlGroupValue,
+                children: myTabs,
+                onValueChanged: (i) {
+                  setState(
+                    () {
+                      segmentedControlGroupValue = i!;
+                    },
                   );
-                } else if (students.isNotEmpty) {
-                  final List<Student> activeStudents = students
-                      .where((student) => student.activeSubscription)
-                      .toList();
+                },
+              ),
+            ),
+            FutureBuilder<List<Student>>(
+              future: readStudentDB(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.done) {
+                  final List<Student> students = snapshot.data ?? [];
 
-                  final List<Student> inactiveStudents = students
-                      .where((student) => !student.activeSubscription)
-                      .toList();
-
-                  inactiveStudents.sort((a, b) =>
-                      a.subscriptionDate.compareTo(b.subscriptionDate));
-
-                  activeStudents.sort((a, b) =>
-                      a.subscriptionDate.compareTo(b.subscriptionDate));
-
-                  if (segmentedControlGroupValue == 0 &&
-                      inactiveStudents.isNotEmpty) {
-                    return Expanded(
-                      child: listStudents(
-                        context,
-                        inactiveStudents,
-                      ),
-                    );
-                  } else if (segmentedControlGroupValue == 1 &&
-                      activeStudents.isNotEmpty) {
-                    return Expanded(
-                      child: listStudents(
-                        context,
-                        activeStudents,
-                      ),
-                    );
-                  }
-
-                  if (inactiveStudents.isEmpty) {
+                  if (students.isEmpty) {
                     return Expanded(
                       child: Center(
-                        child: Icon(
-                          FontAwesomeIcons.check,
-                          color: Colors.lightGreen,
-                          size: MyIconSize.bigIcon,
+                        child: Text(
+                          'nessun elemento presente',
+                          style: TextStyle(
+                            fontSize: MyFontSize.primaryText,
+                          ),
+                        ),
+                      ),
+                    );
+                  } else if (students.isNotEmpty) {
+                    final List<Student> activeStudents = students
+                        .where((student) => student.activeSubscription == 0)
+                        .toList();
+
+                    final List<Student> inactiveStudents = students
+                        .where((student) => student.activeSubscription == 1)
+                        .toList();
+
+                    inactiveStudents.sort((a, b) =>
+                        a.subscriptionDate.compareTo(b.subscriptionDate));
+
+                    activeStudents.sort((a, b) =>
+                        a.subscriptionDate.compareTo(b.subscriptionDate));
+
+                    if (segmentedControlGroupValue == 0 &&
+                        inactiveStudents.isNotEmpty) {
+                      return Expanded(
+                        child: listStudents(
+                          context,
+                          inactiveStudents,
+                        ),
+                      );
+                    } else if (segmentedControlGroupValue == 1 &&
+                        activeStudents.isNotEmpty) {
+                      return Expanded(
+                        child: listStudents(
+                          context,
+                          activeStudents,
+                        ),
+                      );
+                    }
+
+                    if (inactiveStudents.isEmpty) {
+                      return Expanded(
+                        child: Center(
+                          child: Icon(
+                            FontAwesomeIcons.check,
+                            color: Colors.lightGreen,
+                            size: MyIconSize.bigIcon,
+                          ),
+                        ),
+                      );
+                    }
+
+                    if (activeStudents.isEmpty) {
+                      return Expanded(
+                        child: Center(
+                          child: Icon(
+                            FontAwesomeIcons.userClock,
+                            color: Colors.grey,
+                            size: MyIconSize.bigIcon,
+                          ),
+                        ),
+                      );
+                    }
+
+                    return Expanded(
+                      child: Center(
+                        child: Text(
+                          'errore',
+                          style: TextStyle(
+                            fontSize: MyFontSize.primaryText,
+                          ),
                         ),
                       ),
                     );
                   }
-
-                  if (activeStudents.isEmpty) {
-                    return Expanded(
-                      child: Center(
-                        child: Icon(
-                          FontAwesomeIcons.userClock,
-                          color: Colors.grey,
-                          size: MyIconSize.bigIcon,
-                        ),
-                      ),
-                    );
-                  }
-
                   return Expanded(
                     child: Center(
                       child: Text(
-                        'errore',
+                        'errore non definito',
                         style: TextStyle(
                           fontSize: MyFontSize.primaryText,
                         ),
                       ),
                     ),
                   );
-                }
-                return Expanded(
-                  child: Center(
+                } else if (snapshot.hasError) {
+                  Center(
                     child: Text(
-                      'errore non definito',
+                      'errore\n${snapshot.error}',
                       style: TextStyle(
                         fontSize: MyFontSize.primaryText,
                       ),
                     ),
-                  ),
-                );
-              } else if (snapshot.hasError) {
-                Center(
-                  child: Text(
-                    'errore\n${snapshot.error}',
-                    style: TextStyle(
-                      fontSize: MyFontSize.primaryText,
+                  );
+                }
+
+                return Expanded(
+                  child: Center(
+                    child: CircularProgressIndicator(
+                      color: MyColors.colorFour,
                     ),
                   ),
                 );
-              }
-
-              return Expanded(
-                child: Center(
-                  child: CircularProgressIndicator(
-                    color: MyColors.colorFour,
-                  ),
-                ),
-              );
-            },
-          ),
-        ],
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -201,8 +226,13 @@ class _HomeScreenState extends State<HomeScreen> {
       itemBuilder: (context, index) {
         return Padding(
           padding: const EdgeInsets.all(12.0),
-          child: StudentCard(
-            student: students[index],
+          child: InkWell(
+            onTap: () => Navigator.of(context)
+                .pushNamed('/detail/student', arguments: students[index])
+                .then((value) => setState(() {})),
+            child: StudentCard(
+              student: students[index],
+            ),
           ),
         );
       },

@@ -1,4 +1,5 @@
 [{
+        "id": 331324124,
         "activeSubscription": false,
         "placeOfResidence": "Vitulano",
         "name": "Mario",
@@ -6,82 +7,67 @@
         "surname": "Mazzarelli"
     },
     {
+        "id": 331343124,
         "activeSubscription": false,
         "placeOfResidence": "Vitulano",
         "name": "Mario",
         "subscriptionDate": "2001-11-12",
         "surname": "Mazzarelli"
     }, {
+        "id": 33428124,
         "activeSubscription": false,
         "placeOfResidence": "Vitulano",
         "name": "Mario",
         "subscriptionDate": "2001-11-12",
         "surname": "Mazzarelli"
     }, {
+        "id": 132414124,
         "activeSubscription": false,
         "placeOfResidence": "Napoli",
         "name": "Anastasia",
         "subscriptionDate": "2020-03-11",
         "surname": "Parrella"
     }, {
+        "id": 12214124,
         "activeSubscription": false,
         "placeOfResidence": "Vitulano",
         "name": "Mario",
         "subscriptionDate": "2020-02-12",
         "surname": "Mazzarelli"
     }, {
-        "activeSubscription":false,
+        "id": 134249924,
+        "activeSubscription": false,
         "placeOfResidence": "Vitulano",
         "name": "Mario",
         "subscriptionDate": "2020-07-22",
         "surname": "Mazzarelli"
     }, {
+        "id": 1219014,
         "activeSubscription": false,
         "placeOfResidence": "Vitulano",
         "name": "Mario",
         "subscriptionDate": "2020-11-12",
         "surname": "Mazzarelli"
     }, {
+        "id": 19213138,
         "activeSubscription": false,
         "placeOfResidence": "Vitulano",
         "name": "Nicola",
         "subscriptionDate": "2020-11-12",
         "surname": "Iadonisi"
     }, {
+        "id": 11311238,
         "activeSubscription": false,
         "placeOfResidence": "Vitulano",
         "name": "Mario",
         "subscriptionDate": "2020-11-12",
         "surname": "Mazzarelli"
     }, {
+        "id": 91387129379,
         "activeSubscription": true,
         "placeOfResidence": "Vitulano",
         "name": "Mario",
         "subscriptionDate": "2020-07-12",
         "surname": "Mazzarelli"
-    }, {
-        "activeSubscription": false,
-        "placeOfResidence": "Vitulano",
-        "name": "Mario",
-        "subscriptionDate": "2020-08-12",
-        "surname": "Mazzarelli"
-    }, {
-        "activeSubscription":false,
-        "placeOfResidence": "Vitulano",
-        "name": "Mario",
-        "subscriptionDate": "2020-11-12",
-        "surname": "Mazzarelli"
-    }, {
-        "activeSubscription": false,
-        "placeOfResidence": "Benevento",
-        "name": "Mario",
-        "subscriptionDate": "2020-11-12",
-        "surname": "Mazzarelli"
-    }, {
-        "activeSubscription": false,
-        "placeOfResidence": "Vitulano",
-        "name": "Mario",
-        "subscriptionDate": "2020-01-12",
-        "surname": "Diglio"
     }
 ]

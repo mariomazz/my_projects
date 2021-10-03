@@ -8,16 +8,13 @@ class StudentCard extends StatelessWidget {
   final Student student;
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => Navigator.of(context).pushNamed('/detail/student'),
-      child: Container(
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20.0),
+      ),
+      child: Padding(
         padding: const EdgeInsets.all(12.0),
-        decoration: BoxDecoration(
-          color: Colors.grey.shade300.withOpacity(0.5),
-          borderRadius: BorderRadius.all(
-            Radius.circular(20),
-          ),
-        ),
         child: Row(
           children: [
             Expanded(
@@ -46,7 +43,7 @@ class StudentCard extends StatelessWidget {
                 ),
               ),
             ),
-            student.activeSubscription
+            student.activeSubscription==0
                 ? Expanded(
                     flex: 1,
                     child: Padding(
