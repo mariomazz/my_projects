@@ -6,37 +6,14 @@ import 'package:abbonamenti_studenti/ui/widgets/student%20card/student_card.dart
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-class ClearStudentsScreen extends StatelessWidget {
+class ClearStudentsScreen extends StatefulWidget {
   const ClearStudentsScreen({Key? key}) : super(key: key);
 
-  
+  @override
+  State<ClearStudentsScreen> createState() => _ClearStudentsScreenState();
+}
 
-  Future<bool?> _showConfirmationDialog(BuildContext context, String message) {
-    return showDialog<bool>(
-      context: context,
-      barrierDismissible: true,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(message),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('Yes'),
-              onPressed: () {
-                Navigator.pop(context, true);
-              },
-            ),
-            TextButton(
-              child: const Text('No'),
-              onPressed: () {
-                Navigator.pop(context, false);
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
+class _ClearStudentsScreenState extends State<ClearStudentsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,7 +23,16 @@ class ClearStudentsScreen extends StatelessWidget {
         elevation: 0,
         actions: [
           InkWell(
-            onTap: () {},
+            onTap: () async {
+              final bool? delete = await showConfirmationDialog(
+                  context, 'eliminare tutti gli studenti?');
+
+              if (delete!) {
+                setState(() {
+                  deleteAllStudentDB();
+                });
+              }
+            },
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 15),
               child: Icon(
@@ -120,27 +106,55 @@ class ClearStudentsScreen extends StatelessWidget {
         return Padding(
           padding: const EdgeInsets.all(12.0),
           child: Dismissible(
+            background: Container(
+              alignment: AlignmentDirectional.centerEnd,
+              color: Color(0xFFAB2426),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Icon(
+                      FontAwesomeIcons.trashAlt,
+                      color: Colors.white,
+                    ),
+                    Text(
+                      'Cancella',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ],
+                ),
+              ),
+            ),
             confirmDismiss: (DismissDirection dismissDirection) async {
-              return await _showConfirmationDialog(
+              return await showConfirmationDialog(
                   context, 'rimuovere questo studente ?');
             },
             onDismissed: (direction) {
-              deleteSingleStudent(students[index].id);
+              setState(() {
+                deleteSingleStudent(students[index].id);
+              });
             },
             key: Key(students[index].id.toString()),
             child: Stack(
               children: [
-                InkWell(
-                  onTap: () {},
-                  child: StudentCard(
-                    student: students[index],
-                  ),
+                StudentCard(
+                  student: students[index],
                 ),
                 Positioned(
                   top: -10,
                   right: 0,
                   child: IconButton(
-                    onPressed: () {},
+                    onPressed: () async {
+                      final bool? delete = await showConfirmationDialog(
+                          context, 'eliminare questo studente?');
+
+                      if (delete!) {
+                        setState(() {
+                          deleteSingleStudent(students[index].id);
+                        });
+                      }
+                    },
                     icon: Icon(
                       FontAwesomeIcons.userTimes,
                       color: Colors.red.shade300,

@@ -1,5 +1,6 @@
 import 'package:abbonamenti_studenti/configurations/constants/constants.dart';
 import 'package:abbonamenti_studenti/models/student/student.dart';
+import 'package:abbonamenti_studenti/ui/screens/add%20student/add_student.dart';
 import 'package:abbonamenti_studenti/ui/screens/clear%20students/clear_students.dart';
 import 'package:abbonamenti_studenti/ui/screens/detail%20student/detail_student.dart';
 import 'package:abbonamenti_studenti/ui/screens/home/home_screen.dart';
@@ -50,6 +51,13 @@ class RouteGenerator {
         return MaterialPageRoute(
           builder: (_) {
             return StudentsScreen();
+          },
+        );
+
+      case '/add/students':
+        return MaterialPageRoute(
+          builder: (_) {
+            return AddStudent();
           },
         );
 
