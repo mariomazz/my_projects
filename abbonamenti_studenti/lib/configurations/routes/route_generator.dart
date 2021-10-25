@@ -7,6 +7,7 @@ import 'package:abbonamenti_studenti/ui/screens/home/home_screen.dart';
 import 'package:abbonamenti_studenti/ui/screens/info/info_screen.dart';
 import 'package:abbonamenti_studenti/ui/screens/students/students_screen.dart';
 import 'package:abbonamenti_studenti/ui/widgets/app%20bar/app_bar.dart';
+import 'package:abbonamenti_studenti/ui/widgets/navigation%20effect/bouncy_page_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -24,11 +25,8 @@ class RouteGenerator {
 
       case '/detail/student':
         if (args is Student) {
-          return MaterialPageRoute(
-            fullscreenDialog: true,
-            builder: (_) {
-              return DetailStudent(student: args);
-            },
+          return BouncyPageRoute(
+            widget: DetailStudent(student: args),
           );
         }
         return _errorRoute();

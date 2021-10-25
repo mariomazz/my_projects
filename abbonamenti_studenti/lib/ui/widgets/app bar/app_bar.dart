@@ -8,6 +8,7 @@ class MyAppBar extends PreferredSize {
     this.backgroundColor,
     this.automaticallyImplyLeading = true,
     this.elevation,
+    this.bottom,
   }) : super(
           key: key,
           preferredSize: const Size.fromHeight(kToolbarHeight),
@@ -17,9 +18,11 @@ class MyAppBar extends PreferredSize {
             backgroundColor: backgroundColor,
             automaticallyImplyLeading: automaticallyImplyLeading,
             elevation: elevation,
+            bottom: bottom,
           ),
         );
 
+  PreferredSizeWidget? bottom;
   List<Widget>? actions;
   Widget? title;
   Color? backgroundColor;

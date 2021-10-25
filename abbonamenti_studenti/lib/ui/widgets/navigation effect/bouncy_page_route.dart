@@ -5,7 +5,7 @@ class BouncyPageRoute extends PageRouteBuilder {
 
   BouncyPageRoute({required this.widget})
       : super(
-          transitionDuration: Duration(seconds: 2),
+          transitionDuration: Duration(seconds: 1),
           transitionsBuilder: (context, Animation<double> animation,
               Animation<double> secAnimation, Widget child) {
             animation =
