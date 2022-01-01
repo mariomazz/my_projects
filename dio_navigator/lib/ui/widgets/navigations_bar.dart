@@ -11,7 +11,7 @@ class CustomNavBar extends StatelessWidget {
       currentIndex: index,
       items: [
         BottomNavigationBarItem(
-          icon: Icon(Icons.home),
+          icon: const Icon(Icons.home),
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.bookmark_border),

@@ -6,18 +6,18 @@ import 'package:project_model/core/networking_service/api/portici_api/env.dart';
 class ApiPorticiService {
   // inizialization
   ApiPorticiService() {
-    this._dio = Dio()..interceptors.add(ApiInterceptors.apiPorticiInterceptors);
+    _dio = Dio()..interceptors.add(ApiInterceptors.apiPorticiInterceptors);
   }
 
-  String _baseUrl =
+  final String _baseUrl =
       'https://api-$porticiApiWorkEnvironmentName.smartpa.cloud/portico';
 
   late Dio _dio;
 
-  Dio get dio => this._dio;
+  Dio get dio => _dio;
   // end inizialization
 
-  Options options = Options(headers: {'AuhtorityId': porticiApiAuthorityId});
+  final Options options = Options(headers: {'AuthorityId': porticiApiAuthorityId});
 
   Future<dynamic> getTransaction(
       {Map<String, dynamic>? queryParameters}) async {

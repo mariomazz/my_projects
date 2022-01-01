@@ -23,6 +23,7 @@ class MyRouterDelegate extends RouterDelegate<Object> {
             Provider.of<PorticiAutenticationProvider>(context).getIsLogged;
 
         log(currentPage.page.toString());
+        log(isLogged.toString());
 
         return Navigator(
           key: navigatorKey,
@@ -38,14 +39,15 @@ class MyRouterDelegate extends RouterDelegate<Object> {
   List<Page> createPages(MyPageModel currentPage, bool isLogged) {
     List<Page> pages = [];
 /*     if (isLogged) {
- */      if (currentPage.page == Pages.HOME) {
-        pages.add(
-          MyMaterialPage(
-            child: HomePage(),
-            key: HomePage.keyPage,
-          ),
-        );
-      }
+ */
+    if (currentPage.page == Pages.HOME) {
+      pages.add(
+        MyMaterialPage(
+          child: const HomePage(),
+          key: HomePage.keyPage,
+        ),
+      );
+    }
     /* } else {
       pages.add(
         MyMaterialPage(

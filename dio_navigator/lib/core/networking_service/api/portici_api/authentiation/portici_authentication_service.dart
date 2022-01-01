@@ -5,16 +5,16 @@ import 'package:project_model/core/storage/secure_storage_configurations.dart';
 import 'package:project_model/core/storage/secure_storage_sevice.dart';
 
 class PorticiAuthenticationService {
-  SecureStorageService _secureStorageService = SecureStorageService();
-  LoginPorticiConfigurations _loginPorticiConfiguration =
+  final SecureStorageService _secureStorageService = SecureStorageService();
+  final LoginPorticiConfigurations _loginPorticiConfiguration =
       LoginPorticiConfigurations();
-  FlutterAppAuth _appAuth = FlutterAppAuth();
+  final FlutterAppAuth _appAuth = FlutterAppAuth();
 
   Future<bool> login() async {
     try {
       final AuthorizationTokenResponse? requestLogin =
           await _appAuth.authorizeAndExchangeCode(
-        new AuthorizationTokenRequest(
+        AuthorizationTokenRequest(
           _loginPorticiConfiguration.getClientId,
           _loginPorticiConfiguration.getRedirectUrl,
           scopes: _loginPorticiConfiguration.getScopes,
@@ -38,7 +38,7 @@ class PorticiAuthenticationService {
           idToken: requestLogin.idToken!,
         );
       } else {
-        throw new Exception(
+        throw Exception(
             'Alcuni parametri non sono arrivati dalla richiesta di LOGIN');
       }
       return true;
@@ -54,12 +54,12 @@ class PorticiAuthenticationService {
           .getTokenByKey(SecureStorageKeys.DATABASE_KEY_REFRESHTOKEN);
 
       if (refreshToken == null || refreshToken == '') {
-        throw new Exception(
+        throw Exception(
             'Nessun refresh token trovato nel database - secure storage');
       }
 
       final TokenResponse? requestRefreshToken = await _appAuth.token(
-        new TokenRequest(
+        TokenRequest(
           _loginPorticiConfiguration.getClientId,
           _loginPorticiConfiguration.getRedirectUrl,
           discoveryUrl: _loginPorticiConfiguration.getDiscoveryUrl,
@@ -82,7 +82,7 @@ class PorticiAuthenticationService {
           idToken: requestRefreshToken.idToken!,
         );
       } else {
-        throw new Exception(
+        throw Exception(
             'Alcuni parametri non sono arrivati dalla richiesta di REFRESH_TOKEN');
       }
 
@@ -99,12 +99,12 @@ class PorticiAuthenticationService {
           .getTokenByKey(SecureStorageKeys.DATABASE_KEY_IDTOKEN);
 
       if (idToken == null || idToken == '') {
-        throw new Exception(
-            'Nessun id token trovato nel database - secure storage');
+        throw Exception(
+            'Nessun access token trovato nel database - secure storage');
       }
 
       final EndSessionResponse? requestLogout = await _appAuth.endSession(
-        new EndSessionRequest(
+        EndSessionRequest(
           idTokenHint: idToken,
           postLogoutRedirectUrl:
               _loginPorticiConfiguration.getPostLogoutRedirectUrl,
@@ -117,7 +117,7 @@ class PorticiAuthenticationService {
       if (requestLogout != null) {
         await _secureStorageService.clearALLtokensIntoDB();
       } else {
-        throw new Exception('errore Di server , LOGOUT non riuscito');
+        throw Exception('errore Di server , LOGOUT non riuscito');
       }
 
       return true;

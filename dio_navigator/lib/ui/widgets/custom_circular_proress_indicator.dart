@@ -51,7 +51,7 @@ class _MyCircularProgressIndicatorState
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: 130,
       width: 130,
       child: LiquidCircularProgressIndicator(
@@ -65,7 +65,7 @@ class _MyCircularProgressIndicatorState
         direction: Axis.vertical,
         center: Text(
           percent.toString() + "%",
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 20.0,
             fontWeight: FontWeight.w600,
             color: Colors.black,

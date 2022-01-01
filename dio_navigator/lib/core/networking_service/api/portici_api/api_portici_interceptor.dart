@@ -6,18 +6,20 @@ import 'package:project_model/core/storage/secure_storage_configurations.dart';
 import 'package:project_model/core/storage/secure_storage_sevice.dart';
 
 class PorticiApiInterceptors extends Interceptor {
-  SecureStorageService _secureStorageService = SecureStorageService();
+  final SecureStorageService _secureStorageService = SecureStorageService();
 
   @override
   FutureOr<dynamic> onRequest(
-      RequestOptions request, RequestInterceptorHandler handler) async {
+      // ignore: avoid_renaming_method_parameters
+      RequestOptions request,
+      RequestInterceptorHandler handler) async {
     log('REQUEST[${request.method}] => PATH: ${request.path}');
 
     final String? accessToken = await _secureStorageService
         .getTokenByKey(SecureStorageKeys.DATABASE_KEY_ACCESSTOKEN);
 
     if (accessToken != null) {
-      request.headers['Authorization'] = 'Bearer: $accessToken';
+      request.headers['Authorization'] = 'Bearer $accessToken';
     }
 
     log('HEADERS : ${request.headers}');
@@ -56,9 +58,8 @@ class PorticiApiInterceptors extends Interceptor {
     return super.onError(err, handler);
   }
 
-  // ignore: unused_element
   Future<dynamic> _retryRequest(RequestOptions requestOptions) async {
-    final options = new Options(
+    final Options options = Options(
       method: requestOptions.method,
       headers: requestOptions.headers,
     );

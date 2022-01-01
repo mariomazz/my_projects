@@ -10,14 +10,14 @@ class NavigatorProvider extends ChangeNotifier {
   Object _navigationData = {};
 
   void setPage(Pages index, {Object data = ''}) {
-    this._navigationData = data;
-    this._page = index;
+    _navigationData = data;
+    _page = index;
     notifyListeners();
   }
 
   void reset() {
-    this._page = Pages.HOME;
-    this._navigationData = {};
+    _page = Pages.HOME;
+    _navigationData = {};
   }
 
   MyPageModel get getPage => MyPageModel(page: _page, data: _navigationData);

@@ -2,7 +2,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:project_model/core/storage/secure_storage_configurations.dart';
 
 class SecureStorageService {
-  final FlutterSecureStorage _secureStorage = FlutterSecureStorage();
+  final FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
 
   Future<String?> getTokenByKey(String secureStorageKey) async {
     switch (secureStorageKey) {
@@ -23,7 +23,7 @@ class SecureStorageService {
           key: secureStorageKey,
         );
       default:
-        throw new Exception(' (getTokenById) KEY database non valida');
+        throw Exception(' (getTokenById) KEY database non valida');
     }
   }
 
@@ -32,7 +32,7 @@ class SecureStorageService {
       required String refreshToken,
       required String expiryDate,
       required String idToken}) async {
-    await this.clearALLtokensIntoDB();
+    await clearALLtokensIntoDB();
     await _secureStorage.write(
       key: SecureStorageKeys.DATABASE_KEY_ACCESSTOKEN,
       value: accessToken,
