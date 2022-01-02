@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:project_model/core/storage/secure_storage_configurations.dart';
 
@@ -5,25 +7,30 @@ class SecureStorageService {
   final FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
 
   Future<String?> getTokenByKey(String secureStorageKey) async {
-    switch (secureStorageKey) {
-      case SecureStorageKeys.DATABASE_KEY_ACCESSTOKEN:
-        return await _secureStorage.read(
-          key: secureStorageKey,
-        );
-      case SecureStorageKeys.DATABASE_KEY_IDTOKEN:
-        return await _secureStorage.read(
-          key: secureStorageKey,
-        );
-      case SecureStorageKeys.DATABASE_KEY_REFRESHTOKEN:
-        return await _secureStorage.read(
-          key: secureStorageKey,
-        );
-      case SecureStorageKeys.DATABASE_KEY_EXPIRYDATE:
-        return await _secureStorage.read(
-          key: secureStorageKey,
-        );
-      default:
-        throw Exception(' (getTokenById) KEY database non valida');
+    try {
+      switch (secureStorageKey) {
+        case SecureStorageKeys.DATABASE_KEY_ACCESSTOKEN:
+          return await _secureStorage.read(
+            key: secureStorageKey,
+          );
+        case SecureStorageKeys.DATABASE_KEY_IDTOKEN:
+          return await _secureStorage.read(
+            key: secureStorageKey,
+          );
+        case SecureStorageKeys.DATABASE_KEY_REFRESHTOKEN:
+          return await _secureStorage.read(
+            key: secureStorageKey,
+          );
+        case SecureStorageKeys.DATABASE_KEY_EXPIRYDATE:
+          return await _secureStorage.read(
+            key: secureStorageKey,
+          );
+        default:
+          throw Exception(' (getTokenById) KEY database non valida');
+      }
+    } catch (e) {
+      log('(getTokenById) Errore Lettura dal Database - $e');
+      return null;
     }
   }
 

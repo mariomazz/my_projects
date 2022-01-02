@@ -3,6 +3,7 @@ import 'package:flutter_appauth/flutter_appauth.dart';
 import 'package:project_model/core/networking_service/api/portici_api/authentiation/login_configurations.dart';
 import 'package:project_model/core/storage/secure_storage_configurations.dart';
 import 'package:project_model/core/storage/secure_storage_sevice.dart';
+import 'package:tuple/tuple.dart';
 
 class PorticiAuthenticationService {
   final SecureStorageService _secureStorageService = SecureStorageService();
@@ -10,7 +11,7 @@ class PorticiAuthenticationService {
       LoginPorticiConfigurations();
   final FlutterAppAuth _appAuth = FlutterAppAuth();
 
-  Future<bool> login() async {
+  Future<Tuple2<bool, String?>> login() async {
     try {
       final AuthorizationTokenResponse? requestLogin =
           await _appAuth.authorizeAndExchangeCode(
@@ -20,6 +21,7 @@ class PorticiAuthenticationService {
           scopes: _loginPorticiConfiguration.getScopes,
           issuer: _loginPorticiConfiguration.getIssuer,
           preferEphemeralSession: false,
+          promptValues: _loginPorticiConfiguration.gePromptValues,
           serviceConfiguration:
               _loginPorticiConfiguration.getServiceConfiguration,
           additionalParameters: _loginPorticiConfiguration.getParameter,
@@ -41,14 +43,14 @@ class PorticiAuthenticationService {
         throw Exception(
             'Alcuni parametri non sono arrivati dalla richiesta di LOGIN');
       }
-      return true;
+      return Tuple2(true, requestLogin.accessToken);
     } catch (e) {
       log('ERRORE LOGIN - PORTICI AUTENTICATION SERVICE - $e');
-      return false;
+      return const Tuple2(false, null);
     }
   }
 
-  Future<bool> refreshToken() async {
+  Future<Tuple2<bool, String?>> refreshToken() async {
     try {
       final refreshToken = await _secureStorageService
           .getTokenByKey(SecureStorageKeys.DATABASE_KEY_REFRESHTOKEN);
@@ -86,16 +88,16 @@ class PorticiAuthenticationService {
             'Alcuni parametri non sono arrivati dalla richiesta di REFRESH_TOKEN');
       }
 
-      return true;
+      return Tuple2(true, requestRefreshToken.accessToken);
     } catch (e) {
       log('ERRORE REFRESH TOKEN - PORTICI AUTENTICATION SERVICE - $e');
-      return false;
+      return const Tuple2(false, null);
     }
   }
 
   Future<bool> logout() async {
     try {
-      final idToken = await _secureStorageService
+      /*final idToken = await _secureStorageService
           .getTokenByKey(SecureStorageKeys.DATABASE_KEY_IDTOKEN);
 
       if (idToken == null || idToken == '') {
@@ -118,7 +120,8 @@ class PorticiAuthenticationService {
         await _secureStorageService.clearALLtokensIntoDB();
       } else {
         throw Exception('errore Di server , LOGOUT non riuscito');
-      }
+      }*/
+      await _secureStorageService.clearALLtokensIntoDB();
 
       return true;
     } catch (e) {

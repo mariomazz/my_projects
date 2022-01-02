@@ -6,7 +6,7 @@ import 'package:project_model/core/storage/secure_storage_configurations.dart';
 import 'package:project_model/core/storage/secure_storage_sevice.dart';
 
 class PorticiApiInterceptors extends Interceptor {
-  final SecureStorageService _secureStorageService = SecureStorageService();
+  final SecureStorageService secureStorageService = SecureStorageService();
 
   @override
   FutureOr<dynamic> onRequest(
@@ -15,12 +15,20 @@ class PorticiApiInterceptors extends Interceptor {
       RequestInterceptorHandler handler) async {
     log('REQUEST[${request.method}] => PATH: ${request.path}');
 
-    final String? accessToken = await _secureStorageService
-        .getTokenByKey(SecureStorageKeys.DATABASE_KEY_ACCESSTOKEN);
+    final String accessToken = porticiAuthProvider.getAccessToken;
 
-    if (accessToken != null) {
+    if (accessToken == '') {
+      final accessToken = await secureStorageService
+          .getTokenByKey(SecureStorageKeys.DATABASE_KEY_ACCESSTOKEN);
+
+      if (accessToken != null) {
+        porticiAuthProvider.setAccessToken = accessToken;
+        request.headers['Authorization'] = 'Bearer $accessToken';
+      }
+    } else {
       request.headers['Authorization'] = 'Bearer $accessToken';
     }
+
 
     log('HEADERS : ${request.headers}');
 

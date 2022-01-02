@@ -39,7 +39,6 @@ class HomePage extends StatelessWidget {
                 .getTransaction(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.done) {
-
                 return SingleChildScrollView(
                   child: Text(snapshot.data.toString()),
                 );
