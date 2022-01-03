@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:project_model/core/networking_service/api/api_service.dart';
+import 'package:project_model/core/networking_service/api/portici_api/provider/api_service.dart';
 import 'package:project_model/core/networking_service/api/portici_api/authentiation/portici_authentication_provider.dart';
 import 'package:provider/provider.dart';
 
