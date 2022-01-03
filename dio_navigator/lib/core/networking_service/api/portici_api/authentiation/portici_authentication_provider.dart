@@ -17,9 +17,7 @@ class PorticiAutenticationProvider extends ChangeNotifier {
 
   String get getAccessToken => _accessToken;
 
-  set setAccessToken(String accessToken) {
-    _accessToken = accessToken;
-  }
+  set setAccessToken(String accessToken) => _accessToken = accessToken;
 
   Future<void> authenticationStatusChange() async =>
       _isLogged ? await logout() : await login();

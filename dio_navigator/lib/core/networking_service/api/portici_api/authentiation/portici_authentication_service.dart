@@ -97,30 +97,6 @@ class PorticiAuthenticationService {
 
   Future<bool> logout() async {
     try {
-      /*final idToken = await _secureStorageService
-          .getTokenByKey(SecureStorageKeys.DATABASE_KEY_IDTOKEN);
-
-      if (idToken == null || idToken == '') {
-        throw Exception(
-            'Nessun access token trovato nel database - secure storage');
-      }
-
-      final EndSessionResponse? requestLogout = await _appAuth.endSession(
-        EndSessionRequest(
-          idTokenHint: idToken,
-          postLogoutRedirectUrl:
-              _loginPorticiConfiguration.getPostLogoutRedirectUrl,
-          serviceConfiguration:
-              _loginPorticiConfiguration.getServiceConfiguration,
-          additionalParameters: _loginPorticiConfiguration.getParameter,
-        ),
-      );
-
-      if (requestLogout != null) {
-        await _secureStorageService.clearALLtokensIntoDB();
-      } else {
-        throw Exception('errore Di server , LOGOUT non riuscito');
-      }*/
       await _secureStorageService.clearALLtokensIntoDB();
 
       return true;
