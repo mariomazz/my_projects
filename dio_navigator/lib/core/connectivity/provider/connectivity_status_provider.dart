@@ -2,18 +2,18 @@ import 'dart:io';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 
-class ConnectivityProvider extends ChangeNotifier {
+class ConnectivityStatusProvider extends ChangeNotifier {
   final Connectivity _connectivity = Connectivity();
 
   late ConnectivityStatus _connectionStatus;
 
-  bool _hasConnection = false;
-
   ConnectivityStatus get getConnectionStatus => _connectionStatus;
+
+  bool _hasConnection = false;
 
   bool get getHasConnection => _hasConnection;
 
-  ConnectivityProvider() {
+  ConnectivityStatusProvider() {
     _connectivity.onConnectivityChanged
         .listen((ConnectivityResult result) async {
       _connectionStatus = _getStatusFromResult(result);
@@ -42,20 +42,16 @@ class ConnectivityProvider extends ChangeNotifier {
   }
 
   Future<bool> _checkConnection() async {
-    bool hasConnection = false;
-
     try {
       final result = await InternetAddress.lookup('google.com');
       if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
-        hasConnection = true;
+        return true;
       } else {
-        hasConnection = false;
+        return false;
       }
     } on SocketException catch (_) {
-      hasConnection = false;
+      return false;
     }
-
-    return hasConnection;
   }
 }
 

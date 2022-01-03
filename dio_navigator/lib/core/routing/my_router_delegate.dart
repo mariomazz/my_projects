@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
+import 'package:project_model/core/connectivity/provider/connectivity_status_provider.dart';
 import 'package:project_model/core/networking_service/api/portici_api/authentiation/portici_authentication_provider.dart';
 import 'package:project_model/core/routing/page_model.dart';
 import 'package:project_model/core/routing/provider/navigation_provider.dart';
@@ -22,12 +23,16 @@ class MyRouterDelegate extends RouterDelegate<Object> {
         final isLogged =
             Provider.of<PorticiAutenticationProvider>(context).getIsLogged;
 
+        final bool internetConnectionAvailable =
+            Provider.of<ConnectivityStatusProvider>(context).getHasConnection;
+
         log(currentPage.page.toString());
         log(isLogged.toString());
 
         return Navigator(
           key: navigatorKey,
-          pages: createPages(currentPage, isLogged),
+          pages:
+              createPages(currentPage, isLogged, internetConnectionAvailable),
           onPopPage: (route, result) {
             return route.didPop(result);
           },
@@ -36,10 +41,10 @@ class MyRouterDelegate extends RouterDelegate<Object> {
     );
   }
 
-  List<Page> createPages(MyPageModel currentPage, bool isLogged) {
+  List<Page> createPages(MyPageModel currentPage, bool isLogged,
+      bool internetConnectionAvailable) {
     List<Page> pages = [];
-/*     if (isLogged) {
- */
+
     if (currentPage.page == Pages.HOME) {
       pages.add(
         MyMaterialPage(
@@ -48,16 +53,7 @@ class MyRouterDelegate extends RouterDelegate<Object> {
         ),
       );
     }
-    /* } else {
-      pages.add(
-        MyMaterialPage(
-          child: NotLoggingPage(),
-          key: NotLoggingPage.keyPage,
-        ),
-      );
-      // not logging page
-    }
- */
+
     return pages;
   }
 
