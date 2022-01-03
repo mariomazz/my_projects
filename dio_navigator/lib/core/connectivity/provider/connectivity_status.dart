@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 
-class ConnectivityService extends ChangeNotifier {
+class ConnectivityProvider extends ChangeNotifier {
   final Connectivity _connectivity = Connectivity();
 
   late ConnectivityStatus _connectionStatus;
@@ -13,7 +13,7 @@ class ConnectivityService extends ChangeNotifier {
 
   bool get getHasConnection => _hasConnection;
 
-  ConnectivityService() {
+  ConnectivityProvider() {
     _connectivity.onConnectivityChanged
         .listen((ConnectivityResult result) async {
       _connectionStatus = _getStatusFromResult(result);

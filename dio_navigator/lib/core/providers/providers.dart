@@ -1,4 +1,4 @@
-
+import 'package:project_model/core/connectivity/provider/connectivity_status.dart';
 import 'package:project_model/core/networking_service/api/portici_api/provider/api_service.dart';
 import 'package:project_model/core/networking_service/api/portici_api/authentiation/portici_authentication_provider.dart';
 import 'package:project_model/core/routing/provider/navigation_provider.dart';
@@ -11,12 +11,16 @@ ApiServiceProvider apiServiceProvider = ApiServiceProvider();
 
 class MyProviders {
   final List<SingleChildWidget> _providers = [
-    ListenableProvider<PorticiAutenticationProvider>(
-      create: (context) => porticiAuthProvider,
-      dispose: (context, provider) => provider.dispose(),
-    ),
     ListenableProvider<NavigatorProvider>(
       create: (context) => NavigatorProvider(),
+      dispose: (context, provider) => provider.dispose(),
+    ),
+    ListenableProvider<ConnectivityProvider>(
+      create: (context) => ConnectivityProvider(),
+      dispose: (context, provider) => provider.dispose(),
+    ),
+    ListenableProvider<PorticiAutenticationProvider>(
+      create: (context) => porticiAuthProvider,
       dispose: (context, provider) => provider.dispose(),
     ),
     Provider<ApiServiceProvider>(
