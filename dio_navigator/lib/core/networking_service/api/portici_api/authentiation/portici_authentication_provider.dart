@@ -36,8 +36,9 @@ class PorticiAutenticationProvider extends ChangeNotifier {
   Future<void> logout() async {
     final bool isNotLogged = await _porticiAuthService.logout();
     if (isNotLogged) {
-      _isLogged = false;
+      setAccessToken = '';
 
+      _isLogged = false;
       notifyListeners();
     }
   }
