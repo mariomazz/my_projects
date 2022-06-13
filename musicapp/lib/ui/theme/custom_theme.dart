@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'colors.dart';
 
 class CustomTheme with ChangeNotifier {
-  static final CustomTheme theme = CustomTheme();
+  static final CustomTheme _theme = CustomTheme();
+  static CustomTheme get theme => _theme;
 
   bool _isDarkTheme = false;
   ThemeMode get currentTheme => _isDarkTheme ? ThemeMode.dark : ThemeMode.light;

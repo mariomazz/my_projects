@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
@@ -141,7 +142,7 @@ class _HomePageState extends State<HomePage> {
         onTap: () async => index != null
             ? await Navigator.push(
                 context,
-                MaterialPageRoute(
+                CupertinoPageRoute(
                   builder: (context) =>
                       SongDetail(songReference: _songs[index]),
                 ),
