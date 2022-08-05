@@ -32,6 +32,22 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  Future<void> _addSong(File song) async {
+    try {
+      /*  final data = await FirebaseStorage.instance.ref('/songs/').list();
+      return data.items.map((e) => File(e.fullPath)).toList(); */
+
+      final storage = FirebaseStorage.instance;
+
+      await storage.ref("#reference").putFile(song);
+    } on FirebaseException catch (e) {
+      if (kDebugMode) {
+        print('errore loadSongs => ${e.message}');
+      }
+      return;
+    }
+  }
+
   void _fetchSongs() async {
     await _loadSongs().then(
       (e) => setState(() {

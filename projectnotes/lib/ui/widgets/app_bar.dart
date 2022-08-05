@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import '../theme/theme.dart';
 
 class AppBarCS extends StatelessWidget implements PreferredSizeWidget {

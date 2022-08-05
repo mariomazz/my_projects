@@ -1,37 +1,29 @@
-import 'package:extension_methods/extension_methods.dart';
-import 'package:routing_gr/routing_gr.dart';
-import '../../ui/pages/home.dart';
-import '../../ui/pages/login.dart';
-import '../../ui/pages/note_detail.dart';
-import '../authentication/authentication.dart';
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import '../providers/base_listenable.dart';
 
-class EnableRouting {
-  static final RoutingConfigurations configurations = RoutingConfigurations(
-    initialPage: Pages.home.path,
-    pages: Pages.values.map((e) => e.path).toList(),
-    builder: (page) {
-      if (page.equals(Pages.home.path)) {
-        return const HomePage();
-      }
+class RoutingProvider {
+  const RoutingProvider();
+  final _initialRoute = "/";
 
-      if (page.equals(Pages.noteDetail.path)) {
-        return const NoteDetail();
-      }
-
+  late final GoRouter _router = GoRouter(
+    urlPathStrategy: UrlPathStrategy.path,
+    refreshListenable: _listenable,
+    debugLogDiagnostics: true,
+    initialLocation: _initialRoute,
+    routes: [
+      GoRoute(path: "path"),
+    ],
+    redirect: (state) {
       return null;
     },
-    setPathUrlStrategy: true,
-    connectivityManagement: true,
-    authManagement: true,
-    authentication: AuthenticationService().controller,
-    withoutAuthentication: const LoginPage(),
   );
-}
 
-enum Pages { home, noteDetail }
+  GoRouter get router => _router;
 
-extension ExtendPages on Pages {
-  String get path {
-    return "/$name";
-  }
+  RouteInformationParser<Object> get parser => _router.routeInformationParser;
+  RouterDelegate<Object> get delegate => _router.routerDelegate;
+  RouteInformationProvider get provider => _router.routeInformationProvider;
+
+  final _listenable = BaseProvider();
 }

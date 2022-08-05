@@ -1,11 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:routing_gr/routing_gr.dart';
 import 'package:widgets/progress.dart';
 import 'package:widgets/resolve_snapshot.dart';
+import 'package:widgets/show_loading.dart';
 import '../../core/authentication/authentication.dart';
 import '../../core/models/notes.dart';
-import '../../core/routing/routing.dart';
 import '../theme/theme.dart';
 import '../widgets/app_bar.dart';
 import '../widgets/card.dart';
@@ -15,7 +14,8 @@ import '../widgets/text.dart';
 import '../widgets/vertical_list.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage({Key? key}) : super(key: key);
+  HomePage({Key? key}) : super(key: key);
+  final buttonLoadingController = PopUpController();
 
   @override
   Widget build(BuildContext context) {
@@ -55,17 +55,27 @@ class HomePage extends StatelessWidget {
                         body: e["body"],
                         updateAt: DateTime.parse(e["updateAt"]),
                       );
-                    }).toList();
+                    }).toList()
+                      ..sort((a, b) {
+                        if (a.updateAt != null && b.updateAt != null) {
+                          return b.updateAt!.compareTo(a.updateAt!);
+                        }
+
+                        return 0;
+                      });
 
                     return VerticalList(
                       elements: notes
-                          .map((e) => CardCS(
-                              onTap: () {
-                                Routing().push(Pages.noteDetail.path, extra: e);
-                              },
-                              title: e.title ?? '',
-                              subtitle: e.body ?? '',
-                              externalPadding: true))
+                          .map(
+                            (e) => CardCS(
+                                onTap: () {
+                                 /*  Routing()
+                                      .push(Pages.noteDetail.path, extra: e); */
+                                },
+                                title: e.title ?? '',
+                                subtitle: e.body ?? '',
+                                externalPadding: true),
+                          )
                           .toList(),
                     );
                   },
@@ -90,12 +100,43 @@ class HomePage extends StatelessWidget {
                   ),
                 ),
                 onPressed: () {
-                  Routing().push(Pages.noteDetail.path, extra: "");
+                  // Routing().push(Pages.noteDetail.path, extra: "");
                 },
                 child: Icon(
                   size: double.parse("35.0"),
                   Icons.add,
                   color: ThemeCS.primaryText,
+                ),
+              ),
+            ),
+          ),
+          PaddingCS(
+            child: ElevatedButton(
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all(ThemeCS.color5),
+                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
+                ),
+              ),
+              onPressed: () async {
+                buttonLoadingController.show();
+                await Future.delayed(const Duration(seconds: 3), () {
+                  buttonLoadingController.close();
+                });
+              },
+              child: PopUp(
+                expandContent: false,
+                controller: buttonLoadingController,
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                  child: Icon(
+                    size: double.parse("35.0"),
+                    Icons.add,
+                    color: ThemeCS.primaryText,
+                  ),
                 ),
               ),
             ),
