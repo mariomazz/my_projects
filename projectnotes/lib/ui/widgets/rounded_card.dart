@@ -34,7 +34,7 @@ class RoundedCard extends StatelessWidget {
           IntrinsicHeight(
             child: Column(
               children: [
-                PaddingCS(
+                PaddingI(
                   child: Text(
                     data,
                     style: TextStyle(

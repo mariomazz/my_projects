@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class PaddingCS extends StatelessWidget {
-  const PaddingCS({Key? key, this.child, this.padding = 8.0}) : super(key: key);
+class PaddingI extends StatelessWidget {
+  const PaddingI({Key? key, this.child, this.padding = 8.0}) : super(key: key);
   final Widget? child;
   final double padding;
   @override

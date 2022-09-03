@@ -1,136 +1,76 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:widgets/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/authentication/authentication.dart';
+import '../../core/providers/providers.dart';
 import '../theme/theme.dart';
-import '../widgets/padding.dart';
-import '../widgets/scaffold.dart';
-import '../widgets/text.dart';
+import '../widgets/main_button.dart';
+import '../widgets/pop_up.dart';
+import '../widgets/progress.dart';
+import '../widgets/text_input.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key}) : super(key: key);
-
-  @override
-  State<LoginPage> createState() => _LoginPageState();
-}
-
-class _LoginPageState extends State<LoginPage> {
+class LoginPage extends ConsumerWidget {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final PopUpController _loadController = PopUpController();
-  static const _primaryLabelColor = ThemeCS.primary;
 
-  Future<void> _loginEvent(
-      {required String email, required String password}) async {
-    await AuthenticationService().login(email: email, password: password);
+  LoginPage({Key? key}) : super(key: key);
+
+  Future<void> _loginEvent({
+    required AuthProvider authProvider,
+    required String email,
+    required String password,
+  }) async {
+    await authProvider.login(email: email, password: password);
+  }
+
+  Future<void> _onTapLoginButton(AuthProvider authProvider) async {
+    _loadController.show();
+
+    final email = _emailController.text;
+    final password = _passwordController.text;
+    if (email.isNotEmpty && password.isNotEmpty) {
+      await _loginEvent(
+        authProvider: authProvider,
+        email: email,
+        password: password,
+      );
+    } else {
+      if (kDebugMode) {
+        print("Errore credenziali vuote");
+      }
+    }
+    _loadController.close();
   }
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _emailController.dispose();
-    _loadController.dispose();
-    _passwordController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final authProvider = ref.read(Providers.authProvider);
     return PopUp(
-      builder: const ProgressCS(color: ThemeCS.white),
+      builder: const ProgressWidget(),
       background: Colors.transparent,
       controller: _loadController,
-      child: ScaffoldCS(
-        appBar: AppBar(
-          backgroundColor: _primaryLabelColor,
-          elevation: 0,
-          title: const Text("Accesso ProjectNotes"),
-        ),
+      child: Scaffold(
+        backgroundColor: AppTheme.backgroundPrimary,
         body: Column(
           children: [
-            PaddingCS(
-              child: TextField(
-                keyboardType: TextInputType.text,
-                style: TextStyle(
-                  fontSize: TextSize.large.value,
-                  color: ThemeCS.primaryText,
-                ),
-                cursorColor: ThemeCS.primaryText,
-                decoration: InputDecoration(
-                  labelText: "Email ...",
-                  labelStyle: TextStyle(
-                    fontSize: TextSize.large.value,
-                    color: ThemeCS.primaryText,
-                  ),
-                  enabledBorder: const UnderlineInputBorder(
-                    borderSide: BorderSide(color: _primaryLabelColor),
-                  ),
-                  focusedBorder: const UnderlineInputBorder(
-                    borderSide: BorderSide(color: _primaryLabelColor),
-                  ),
-                ),
-                controller: _emailController,
-              ),
+            TextInput(
+              obscureText: false,
+              textInputType: TextInputType.emailAddress,
+              controller: _emailController,
+              labelText: "Email",
             ),
-            PaddingCS(
-              child: TextField(
-                obscureText: true,
-                enableSuggestions: false,
-                autocorrect: false,
-                keyboardType: TextInputType.visiblePassword,
-                style: TextStyle(
-                  fontSize: TextSize.large.value,
-                  color: ThemeCS.primaryText,
-                ),
-                cursorColor: ThemeCS.primaryText,
-                decoration: InputDecoration(
-                  labelText: "Password ...",
-                  labelStyle: TextStyle(
-                    fontSize: TextSize.large.value,
-                    color: ThemeCS.primaryText,
-                  ),
-                  enabledBorder: const UnderlineInputBorder(
-                    borderSide: BorderSide(color: _primaryLabelColor),
-                  ),
-                  focusedBorder: const UnderlineInputBorder(
-                    borderSide: BorderSide(color: _primaryLabelColor),
-                  ),
-                ),
-                controller: _passwordController,
-              ),
+            TextInput(
+              obscureText: true,
+              textInputType: TextInputType.visiblePassword,
+              controller: _passwordController,
+              labelText: "Password",
             ),
             Expanded(
               child: Center(
-                child: ElevatedButton(
-                  style: ButtonStyle(
-                    backgroundColor:
-                        MaterialStateProperty.all(_primaryLabelColor),
-                  ),
-                  child: const Text("Login"),
-                  onPressed: () async {
-                    _loadController.show();
-
-                    final email = _emailController.text;
-                    final password = _passwordController.text;
-                    if (email.isNotEmpty && password.isNotEmpty) {
-                      await _loginEvent(
-                        email: email,
-                        password: password,
-                      );
-                    } else {
-                      if (kDebugMode) {
-                        print("Errore credenziali vuote");
-                      }
-                    }
-                    _loadController.close();
-
-                    _emailController.clear();
-                    _passwordController.clear();
-                  },
+                child: MainButton(
+                  onTap: () async => await _onTapLoginButton(authProvider),
+                  title: "Login",
                 ),
               ),
             ),

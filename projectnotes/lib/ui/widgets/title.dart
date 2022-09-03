@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class TitleCS extends StatelessWidget {
-  const TitleCS({
+class TitleI extends StatelessWidget {
+  const TitleI({
     Key? key,
     required this.data,
     this.style = const TextStyle(

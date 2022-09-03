@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import '../theme/theme.dart';
 
-class AppBarCS extends StatelessWidget implements PreferredSizeWidget {
-  const AppBarCS({
+class AppBarI extends StatelessWidget implements PreferredSizeWidget {
+  const AppBarI({
     Key? key,
     required this.title,
     this.actions = const [],
-    this.backgroundColor = ThemeCS.primary,
+    this.backgroundColor = AppTheme.white,
     this.leading,
   }) : super(key: key);
 

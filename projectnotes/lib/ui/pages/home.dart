@@ -1,9 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+/* import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:widgets/progress.dart';
 import 'package:widgets/resolve_snapshot.dart';
 import 'package:widgets/show_loading.dart';
-import '../../core/authentication/authentication.dart';
 import '../../core/models/notes.dart';
 import '../theme/theme.dart';
 import '../widgets/app_bar.dart';
@@ -26,7 +25,7 @@ class HomePage extends StatelessWidget {
         actions: [
           IconButton(
             onPressed: () async {
-              await AuthenticationService().logout();
+              // await AuthenticationService().logout();
             },
             icon: const Icon(
               Icons.logout,
@@ -41,7 +40,7 @@ class HomePage extends StatelessWidget {
             child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
               stream: FirebaseFirestore.instance
                   .collection('notes')
-                  .where("uid", isEqualTo: AuthenticationService().user?.uid)
+                  // .where("uid", isEqualTo: AuthenticationService().user?.uid)
                   .snapshots(),
               builder: (context, snapshot) {
                 return ResolveSnapshot<QuerySnapshot<Map<String, dynamic>>>(
@@ -69,7 +68,7 @@ class HomePage extends StatelessWidget {
                           .map(
                             (e) => CardCS(
                                 onTap: () {
-                                 /*  Routing()
+                                  /*  Routing()
                                       .push(Pages.noteDetail.path, extra: e); */
                                 },
                                 title: e.title ?? '',
@@ -143,6 +142,22 @@ class HomePage extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+ */
+
+import 'package:flutter/material.dart';
+import '../widgets/scaffold.dart';
+import '../widgets/text.dart';
+
+class Home extends StatelessWidget {
+  const Home({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return const ScaffoldI(
+      body: Center(child: TextI(title: "Eventi")),
     );
   }
 }

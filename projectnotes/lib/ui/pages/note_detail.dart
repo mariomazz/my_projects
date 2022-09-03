@@ -1,11 +1,10 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+/* import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:date_format/date_format.dart';
 import 'package:extension_methods/extension_methods.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:widgets/progress.dart';
 import 'package:widgets/show_loading.dart';
-import '../../core/authentication/authentication.dart';
 import '../../core/models/notes.dart';
 import '../theme/theme.dart';
 import '../widgets/app_bar.dart';
@@ -109,7 +108,7 @@ class _NoteDetailState extends State<NoteDetail> {
         );
       }
     } else {
-      final creationNote = (_titleController.text.isNotEmpty ||
+      /* final creationNote = (_titleController.text.isNotEmpty ||
               _bodyController.text.isNotEmpty) &&
           (AuthenticationService().user?.uid != null);
       if (creationNote) {
@@ -118,7 +117,7 @@ class _NoteDetailState extends State<NoteDetail> {
           title: _titleController.text,
           uid: AuthenticationService().user?.uid ?? "",
         );
-      }
+      } */
     }
     _dialogController.close();
   }
@@ -305,3 +304,4 @@ class _NoteDetailState extends State<NoteDetail> {
     );
   }
 }
+ */

@@ -26,7 +26,7 @@ class VerticalList extends StatelessWidget {
     return SizedBox.expand(
         child: Center(
       child: noElements ??
-          TextCS(
+          const TextI(
             title: "Non ci sono elementi",
           ),
     ));

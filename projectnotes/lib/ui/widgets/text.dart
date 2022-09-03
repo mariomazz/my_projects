@@ -1,33 +1,34 @@
 import 'package:extension_methods/extension_methods.dart';
 import 'package:flutter/material.dart';
-
 import '../theme/theme.dart';
 
-class TextCS extends StatelessWidget {
-  TextCS({
+class TextI extends StatelessWidget {
+  const TextI({
     Key? key,
     required this.title,
     this.style,
     this.size = TextSize.normal,
     this.maxLines = 1,
+    this.textAlign,
   }) : super(key: key);
 
   final String title;
   final TextStyle? style;
   final TextSize size;
   final int maxLines;
-
-  late final _textStyle = TextStyle(
-    color: ThemeCS.primaryText,
-    fontSize: size.value,
-  );
+  final TextAlign? textAlign;
 
   @override
   Widget build(BuildContext context) {
+    final textStyle = TextStyle(
+      color: AppTheme.textPrimary,
+      fontSize: size.value,
+    );
     return Text(
       maxLines: maxLines,
       title,
-      style: style ?? _textStyle,
+      style: style ?? textStyle,
+      textAlign: textAlign,
     );
   }
 }

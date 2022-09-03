@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-
 import '../theme/theme.dart';
 
-class SafeAreaCS extends StatelessWidget {
-  const SafeAreaCS({
+class SafeAreaI extends StatelessWidget {
+  const SafeAreaI({
     Key? key,
-    this.color = ThemeCS.white,
+    this.color = AppTheme.backgroundPrimary,
     this.child = const SizedBox(),
     this.bottom = false,
   }) : super(key: key);
