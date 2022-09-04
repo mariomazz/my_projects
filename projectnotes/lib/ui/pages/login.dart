@@ -1,13 +1,16 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:projectnotes/ui/widgets/spacing.dart';
 import '../../core/authentication/authentication.dart';
+import '../../core/languages/it_lang.dart';
 import '../../core/providers/providers.dart';
 import '../theme/theme.dart';
 import '../widgets/main_button.dart';
 import '../widgets/pop_up.dart';
 import '../widgets/progress.dart';
+import '../widgets/text.dart';
 import '../widgets/text_input.dart';
+import '../widgets/toast_notification.dart';
 
 class LoginPage extends ConsumerWidget {
   final TextEditingController _emailController = TextEditingController();
@@ -30,14 +33,17 @@ class LoginPage extends ConsumerWidget {
     final email = _emailController.text;
     final password = _passwordController.text;
     if (email.isNotEmpty && password.isNotEmpty) {
-      await _loginEvent(
-        authProvider: authProvider,
-        email: email,
-        password: password,
-      );
-    } else {
-      if (kDebugMode) {
-        print("Errore credenziali vuote");
+      try {
+        await _loginEvent(
+          authProvider: authProvider,
+          email: email,
+          password: password,
+        );
+      } catch (e) {
+        _passwordController.clear();
+        _loadController.close();
+        ShowToast.showToast(ItLang.loginError);
+        return;
       }
     }
     _loadController.close();
@@ -54,23 +60,29 @@ class LoginPage extends ConsumerWidget {
         backgroundColor: AppTheme.backgroundPrimary,
         body: Column(
           children: [
+            const Spacing(),
+            const TextI(
+              title: ItLang.loginLabel,
+              size: TextSize.large,
+            ),
+            const Spacing(),
             TextInput(
               obscureText: false,
               textInputType: TextInputType.emailAddress,
               controller: _emailController,
-              labelText: "Email",
+              labelText: ItLang.emailLabel,
             ),
             TextInput(
               obscureText: true,
               textInputType: TextInputType.visiblePassword,
               controller: _passwordController,
-              labelText: "Password",
+              labelText: ItLang.passwordLabel,
             ),
             Expanded(
               child: Center(
                 child: MainButton(
                   onTap: () async => await _onTapLoginButton(authProvider),
-                  title: "Login",
+                  title: ItLang.loginLabel,
                 ),
               ),
             ),

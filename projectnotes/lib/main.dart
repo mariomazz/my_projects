@@ -1,12 +1,14 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'core/authentication/authentication.dart';
 import 'core/firebase/options.dart';
 import 'core/providers/providers.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: FirebaseI.options);
+  Providers.setAuthProvider(await AuthProvider.asyncInit());
   runApp(const ProviderScope(child: ProjectNotes()));
 }
 

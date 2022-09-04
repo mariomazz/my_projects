@@ -4,6 +4,12 @@ import '../routing/routing.dart';
 import 'models/user.dart';
 
 class Providers {
+  static late final AuthProvider _authProviderIntance;
+
+  static void setAuthProvider(AuthProvider authProvider) {
+    _authProviderIntance = authProvider;
+  }
+
   static final routing = Provider.autoDispose<Routing>(
     (ref) {
       final reference = ref.watch(authProvider);
@@ -23,5 +29,5 @@ class Providers {
   );
 
   static final authProvider =
-      ChangeNotifierProvider<AuthProvider>((ref) => AuthProvider());
+      ChangeNotifierProvider<AuthProvider>((ref) => _authProviderIntance);
 }

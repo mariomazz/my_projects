@@ -9,4 +9,5 @@ class AppTheme {
   static const iconsPrimary = Colors.black;
   static const white = Colors.white;
   static const black = Colors.black;
+  static const primaryHEX = "E1DBD6";
 }

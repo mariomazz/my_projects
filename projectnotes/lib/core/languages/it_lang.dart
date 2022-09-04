@@ -6,4 +6,11 @@ class ItLang {
     "Note salvate",
   ];
   static const mainAppBarTitle = "Todos WebApp";
+
+  static const loginLabel = "Accedi";
+
+  static const emailLabel = "Email";
+  static const passwordLabel = "Password";
+
+  static const loginError = "Errore Login";
 }
