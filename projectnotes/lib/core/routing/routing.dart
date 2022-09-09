@@ -1,7 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../../ui/pages/home.dart';
+import '../../ui/pages/rapid_notes.dart';
+import '../../ui/pages/todos.dart';
 import '../../ui/pages/login.dart';
 import '../../ui/pages/not_found.dart';
 import '../../ui/pages/notes.dart';
@@ -26,29 +27,32 @@ class Routing {
       GoRoute(
         name: Routes.rootN,
         path: Routes.root,
-        redirect: (state) => state.namedLocation(Routes.homeN),
+        redirect: (state) => state.namedLocation(Routes.todosN),
       ),
       GoRoute(
-        path: '/:screen(${Routes.homeN}|${Routes.notesN})',
+        path:
+            '/:screen(${Routes.todosN}|${Routes.notesN}|${Routes.rapidNotesN})',
         builder: (ctx, state) {
           final String routeName = state.params['screen']!;
           return Navigation(
             routeName: routeName,
-            home: const Home(),
+            todos: const TodosPage(),
             notes: const Notes(),
-            homeRouteName: Routes.homeN,
+            rapidNotes: const RapidNotesPage(),
             notesRouteName: Routes.notesN,
             defaultIndex: 0,
-            defaultRoute: Routes.homeN,
+            defaultRoute: Routes.todosN,
+            rapidNotesRouteName: Routes.rapidNotesN,
+            todosRouteName: Routes.todosN,
           );
         },
       ),
       GoRoute(
-        name: Routes.homeN,
-        path: Routes.home,
+        name: Routes.todosN,
+        path: Routes.todos,
         redirect: (state) => state.namedLocation(
           Routes.root,
-          params: {"screen": Routes.homeN},
+          params: {"screen": Routes.todosN},
         ),
       ),
       GoRoute(
@@ -57,6 +61,14 @@ class Routing {
         redirect: (state) => state.namedLocation(
           Routes.root,
           params: {"screen": Routes.notesN},
+        ),
+      ),
+      GoRoute(
+        name: Routes.rapidNotesN,
+        path: Routes.rapidNotes,
+        redirect: (state) => state.namedLocation(
+          Routes.root,
+          params: {"screen": Routes.rapidNotesN},
         ),
       ),
       GoRoute(

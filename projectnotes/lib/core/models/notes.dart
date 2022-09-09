@@ -1,4 +1,4 @@
-import 'dart:convert';
+/* import 'dart:convert';
 
 class Note {
   final String id;
@@ -81,4 +81,5 @@ class Note {
         title.hashCode ^
         updateAt.hashCode;
   }
-}
+} */
+class Notes{}

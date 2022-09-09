@@ -3,13 +3,17 @@ class Routes {
 
   static const rootN = "init";
 
-  static const home = "/home";
+  static const todos = "/todos";
 
-  static const homeN = "home";
+  static const todosN = "todos";
 
   static const notes = "/notes";
 
   static const notesN = "notes";
+
+  static const rapidNotes = "/rapidNotes";
+
+  static const rapidNotesN = "rapidNotes";
 
   static const login = "/login";
 

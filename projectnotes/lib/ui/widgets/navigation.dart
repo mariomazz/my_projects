@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'drawer.dart';
 import 'main_appbar.dart';
 
@@ -6,30 +7,37 @@ class Navigation extends StatelessWidget {
   const Navigation({
     Key? key,
     required this.routeName,
-    required this.homeRouteName,
+    required this.todosRouteName,
     required this.notesRouteName,
-    required this.home,
-    required this.notes,
+    required this.rapidNotesRouteName,
     required this.defaultRoute,
     required this.defaultIndex,
+    required this.todos,
+    required this.notes,
+    required this.rapidNotes,
   }) : super(key: key);
 
   final String routeName;
-  final String homeRouteName;
+
+  final String todosRouteName;
   final String notesRouteName;
+  final String rapidNotesRouteName;
+
   final String defaultRoute;
+
   final int defaultIndex;
 
-  final Widget home;
+  final Widget todos;
   final Widget notes;
+  final Widget rapidNotes;
 
   dynamic current(dynamic route, {bool returnWidget = false}) {
     if (route is int) {
       if (route == 0) {
         if (returnWidget) {
-          return home;
+          return todos;
         }
-        return homeRouteName;
+        return todosRouteName;
       }
       if (route == 1) {
         if (returnWidget) {
@@ -37,16 +45,22 @@ class Navigation extends StatelessWidget {
         }
         return notesRouteName;
       }
+      if (route == 2) {
+        if (returnWidget) {
+          return rapidNotes;
+        }
+        return rapidNotesRouteName;
+      }
       if (returnWidget) {
-        return home;
+        return todos;
       }
       return defaultRoute;
     }
 
     if (route is String) {
-      if (route == homeRouteName) {
+      if (route == todosRouteName) {
         if (returnWidget) {
-          return home;
+          return todos;
         }
         return 0;
       }
@@ -56,12 +70,31 @@ class Navigation extends StatelessWidget {
         }
         return 1;
       }
+      if (route == rapidNotesRouteName) {
+        if (returnWidget) {
+          return rapidNotes;
+        }
+        return 2;
+      }
       if (returnWidget) {
-        return home;
+        return todos;
       }
       return 0;
     }
     throw Exception("Input Type Error");
+  }
+
+  Widget _current(String routeName) {
+    if (routeName == todosRouteName) {
+      return todos;
+    }
+    if (routeName == notesRouteName) {
+      return notes;
+    }
+    if (routeName == rapidNotesRouteName) {
+      return rapidNotes;
+    }
+    throw Exception("No Match Route Name");
   }
 
   @override
@@ -73,13 +106,14 @@ class Navigation extends StatelessWidget {
             const MainDrawer(),
             Expanded(
               child: Scaffold(
-                appBar: (MediaQuery.of(context).size.width >= 640)
+                appBar: const MainAppBar(),
+                /* appBar: (MediaQuery.of(context).size.width >= 640)
                     ? const MainAppBar()
-                    : null,
+                    : null, */
                 body: Row(
                   mainAxisSize: MainAxisSize.max,
                   children: [
-                    Expanded(child: current(routeName, returnWidget: true)),
+                    Expanded(child: _current(routeName)),
                   ],
                 ),
               ),

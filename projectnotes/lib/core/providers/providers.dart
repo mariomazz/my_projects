@@ -2,8 +2,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../authentication/authentication.dart';
 import '../routing/routing.dart';
 import 'models/user.dart';
+import 'todos_provider.dart';
 
 class Providers {
+  
   static late final AuthProvider _authProviderIntance;
 
   static void setAuthProvider(AuthProvider authProvider) {
@@ -30,4 +32,12 @@ class Providers {
 
   static final authProvider =
       ChangeNotifierProvider<AuthProvider>((ref) => _authProviderIntance);
+
+  static final todosProvider = Provider((ref) => TodosProvider());
+
+  static final allTodos = StreamProvider((ref) {
+    final reference = ref.read(todosProvider);
+    return reference.getAll();
+  });
+
 }

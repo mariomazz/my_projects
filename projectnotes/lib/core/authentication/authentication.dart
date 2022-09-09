@@ -5,13 +5,14 @@ import 'package:flutter/foundation.dart';
 class AuthProvider extends ChangeNotifier {
   static Future<AuthProvider> asyncInit() async {
     final instance = AuthProvider();
-    instance._setUser(await instance.fetchUser());
+    instance._setUser(await instance._fetchUser());
     return instance;
   }
 
   AuthProvider.init() {
     _initAuthListener();
   }
+
   AuthProvider() {
     _initAuthListener();
   }
@@ -24,9 +25,8 @@ class AuthProvider extends ChangeNotifier {
     return user != null;
   }
 
-  Future<User?> fetchUser() async {
+  Future<User?> _fetchUser() async {
     final c = Completer<User?>();
-
     FirebaseAuth.instance.authStateChanges().listen((data) {
       if (!c.isCompleted) {
         c.complete(data);

@@ -147,17 +147,120 @@ class HomePage extends StatelessWidget {
 }
  */
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:uuid/uuid.dart';
+import '../../core/authentication/authentication.dart';
+import '../../core/languages/it_lang.dart';
+import '../../core/models/todos.dart';
+import '../../core/models/todos_doc_reference.dart';
+import '../../core/providers/providers.dart';
+import '../../core/providers/todos_provider.dart';
+import '../widgets/main_button.dart';
+import '../widgets/progress.dart';
 import '../widgets/scaffold.dart';
+import '../widgets/size_config.dart';
 import '../widgets/text.dart';
 
-class Home extends StatelessWidget {
-  const Home({Key? key}) : super(key: key);
+class TodosPage extends ConsumerWidget {
+  const TodosPage({Key? key}) : super(key: key);
+  Future<void> addTodo(
+      TodosProvider provider, AuthProvider authProvider) async {
+    await provider.addTodo(
+      Todos(
+        userId: authProvider.user?.uid ?? '',
+        body: "todd",
+        createdAt: DateTime.now(),
+        id: const Uuid().v1(),
+        number: 1,
+        state: TodosState.completed,
+        title: 'titolo todo',
+      ),
+    );
+  }
 
   @override
-  Widget build(BuildContext context) {
-    return const ScaffoldI(
-      body: Center(child: TextI(title: "Eventi")),
+  Widget build(BuildContext context, WidgetRef ref) {
+    final todos = ref.watch(Providers.allTodos);
+    final todosProvider = ref.watch(Providers.todosProvider);
+    final authProvider = ref.watch(Providers.authProvider);
+
+    return ScaffoldI(
+      body: SizedBox.expand(
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  todos.when<Widget>(
+                    data: (data) => listTodos(context, data),
+                    error: (_, __) => fetchData(),
+                    loading: () => fetchData(),
+                  ),
+                  addTodoButton(todosProvider, authProvider),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
     );
+  }
+
+  Widget listTodos(BuildContext context, List<TodosDocReference> data) {
+    if (kDebugMode) {
+      print(data);
+    }
+    return Table(
+      border: TableBorder.all(),
+      columnWidths: <int, TableColumnWidth>{
+        0: FixedColumnWidth(Sizer.getProportionateScreenWidth(context, 75)),
+        1: FixedColumnWidth(Sizer.getProportionateScreenWidth(context, 150)),
+        2: FixedColumnWidth(Sizer.getProportionateScreenWidth(context, 100)),
+        3: FixedColumnWidth(Sizer.getProportionateScreenWidth(context, 100)),
+      },
+      children: [
+        const TableRow(
+          children: [
+            TextI(title: "Numero"),
+            TextI(title: "Titolo"),
+            TextI(title: "Stato"),
+            TextI(title: "Data"),
+          ],
+        ),
+        ..._tableTodos(data),
+      ],
+    );
+  }
+
+  Widget fetchData({bool center = true}) {
+    return ProgressWidget(center: center);
+  }
+
+  Widget addTodoButton(TodosProvider provider, AuthProvider authProvider) {
+    return MainButton(
+      onTap: () async {
+        await addTodo(provider, authProvider);
+      },
+      title: ItLang.addTodoButtonText,
+    );
+  }
+
+  List<TableRow> _tableTodos(List<TodosDocReference> data) {
+    final rows = <TableRow>[];
+    for (var element in data) {
+      rows.add(
+        TableRow(
+          children: [
+            TextI(title: element.todo.number.toString()),
+            TextI(title: element.todo.title),
+            TextI(title: element.todo.state.name),
+            TextI(title: element.todo.createdAt.toString()),
+          ],
+        ),
+      );
+    }
+    return rows;
   }
 }

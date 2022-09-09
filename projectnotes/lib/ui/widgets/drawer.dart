@@ -27,7 +27,7 @@ class MainDrawer extends StatelessWidget {
           MainButton(
             title: ItLang.drawerButtonsTitle[0],
             onTap: () {
-              context.goNamed(Routes.homeN);
+              context.goNamed(Routes.todosN);
             },
             width: Sizer.getProportionateScreenWidth(
               context,
@@ -42,6 +42,20 @@ class MainDrawer extends StatelessWidget {
             title: ItLang.drawerButtonsTitle[1],
             onTap: () {
               context.goNamed(Routes.notesN);
+            },
+            width: Sizer.getProportionateScreenWidth(
+              context,
+              Sizer.drawerMainWidth,
+            ),
+            height: Sizer.getProportionateScreenHeight(
+              context,
+              Sizer.mainButtonHeight,
+            ),
+          ),
+          MainButton(
+            title: ItLang.drawerButtonsTitle[2],
+            onTap: () {
+              context.go(Routes.rapidNotes);
             },
             width: Sizer.getProportionateScreenWidth(
               context,
