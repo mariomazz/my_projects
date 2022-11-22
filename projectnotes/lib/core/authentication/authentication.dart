@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:extension_methods/extension_methods.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 
@@ -25,15 +26,8 @@ class AuthProvider extends ChangeNotifier {
     return user != null;
   }
 
-  Future<User?> _fetchUser() async {
-    final c = Completer<User?>();
-    FirebaseAuth.instance.authStateChanges().listen((data) {
-      if (!c.isCompleted) {
-        c.complete(data);
-      }
-    });
-    return c.future;
-  }
+  Future<User?> _fetchUser() async =>
+      FirebaseAuth.instance.authStateChanges().toFuture<User?>();
 
   void _initAuthListener() {
     FirebaseAuth.instance.authStateChanges().listen((data) {

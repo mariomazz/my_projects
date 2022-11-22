@@ -45,7 +45,7 @@ class Todos {
       'title': title,
       'body': body,
       'state': state.name,
-      'createdAt': createdAt.millisecondsSinceEpoch,
+      'createdAt': createdAt.toString(),
       'userId': userId,
     };
   }

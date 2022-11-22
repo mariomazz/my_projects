@@ -1,3 +1,4 @@
+import 'package:extension_methods/extension_methods.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -9,18 +10,15 @@ import '../../ui/pages/notes.dart';
 import '../../ui/widgets/navigation.dart';
 import '../../ui/widgets/page.dart';
 import '../authentication/authentication.dart';
-import '../providers/base_listenable.dart';
 import 'configurations/routes.dart';
 
 class Routing {
   final AuthProvider authProvider;
-  Routing({required this.authProvider}) {
-    initListeners(authProvider);
-  }
+  Routing({required this.authProvider});
 
   late final GoRouter _router = GoRouter(
     urlPathStrategy: UrlPathStrategy.path,
-    refreshListenable: _listenable,
+    refreshListenable: ListenableExtension.fromMulti([authProvider.toStream()]),
     debugLogDiagnostics: true,
     initialLocation: Routes.root,
     routes: [
@@ -104,12 +102,4 @@ class Routing {
   RouteInformationParser<Object> get parser => router.routeInformationParser;
   RouterDelegate<Object> get delegate => router.routerDelegate;
   RouteInformationProvider get provider => router.routeInformationProvider;
-
-  final _listenable = BaseProvider();
-
-  void initListeners(AuthProvider authProvider) {
-    authProvider.addListener(() {
-      _listenable.notify();
-    });
-  }
 }

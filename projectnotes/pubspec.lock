@@ -250,8 +250,8 @@ packages:
     dependency: "direct main"
     description:
       path: extension_methods
-      ref: develop
-      resolved-ref: "31c109c3419a39783e8bae3fe89238bd9239890e"
+      ref: HEAD
+      resolved-ref: f851da2a966889912f5ec7e5b79ab7b5580f6baa
       url: "https://github.com/mariomazz/flutter-libraries.git"
     source: git
     version: "0.0.1"

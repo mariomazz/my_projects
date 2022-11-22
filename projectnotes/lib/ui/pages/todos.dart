@@ -147,16 +147,16 @@ class HomePage extends StatelessWidget {
 }
  */
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 import '../../core/authentication/authentication.dart';
+import '../../core/date_parser/date_parser.dart';
 import '../../core/languages/it_lang.dart';
 import '../../core/models/todos.dart';
 import '../../core/models/todos_doc_reference.dart';
 import '../../core/providers/providers.dart';
-import '../../core/providers/todos_provider.dart';
+import '../../core/services/todos_service.dart';
 import '../widgets/main_button.dart';
 import '../widgets/progress.dart';
 import '../widgets/scaffold.dart';
@@ -165,16 +165,15 @@ import '../widgets/text.dart';
 
 class TodosPage extends ConsumerWidget {
   const TodosPage({Key? key}) : super(key: key);
-  Future<void> addTodo(
-      TodosProvider provider, AuthProvider authProvider) async {
+  Future<void> addTodo(TodosService provider, AuthProvider authProvider) async {
     await provider.addTodo(
       Todos(
         userId: authProvider.user?.uid ?? '',
         body: "todd",
-        createdAt: DateTime.now(),
+        createdAt: DateTime.now().toUtc(),
         id: const Uuid().v1(),
         number: 1,
-        state: TodosState.completed,
+        state: TodosState.inProgress,
         title: 'titolo todo',
       ),
     );
@@ -182,9 +181,9 @@ class TodosPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final todos = ref.watch(Providers.allTodos);
-    final todosProvider = ref.watch(Providers.todosProvider);
+    final todosProvider = ref.watch(Providers.todosService);
     final authProvider = ref.watch(Providers.authProvider);
+    final todos = ref.watch(Providers.allTodos);
 
     return ScaffoldI(
       body: SizedBox.expand(
@@ -195,7 +194,7 @@ class TodosPage extends ConsumerWidget {
                 children: [
                   todos.when<Widget>(
                     data: (data) => listTodos(context, data),
-                    error: (_, __) => fetchData(),
+                    error: (e, s) => Center(child: TextI(title: e.toString())),
                     loading: () => fetchData(),
                   ),
                   addTodoButton(todosProvider, authProvider),
@@ -209,16 +208,13 @@ class TodosPage extends ConsumerWidget {
   }
 
   Widget listTodos(BuildContext context, List<TodosDocReference> data) {
-    if (kDebugMode) {
-      print(data);
-    }
     return Table(
       border: TableBorder.all(),
       columnWidths: <int, TableColumnWidth>{
-        0: FixedColumnWidth(Sizer.getProportionateScreenWidth(context, 75)),
-        1: FixedColumnWidth(Sizer.getProportionateScreenWidth(context, 150)),
-        2: FixedColumnWidth(Sizer.getProportionateScreenWidth(context, 100)),
-        3: FixedColumnWidth(Sizer.getProportionateScreenWidth(context, 100)),
+        0: FixedColumnWidth(Sizer.getProportionateScreenWidth(context, 100)),
+        1: FixedColumnWidth(Sizer.getProportionateScreenWidth(context, 175)),
+        2: FixedColumnWidth(Sizer.getProportionateScreenWidth(context, 125)),
+        3: FixedColumnWidth(Sizer.getProportionateScreenWidth(context, 125)),
       },
       children: [
         const TableRow(
@@ -238,7 +234,7 @@ class TodosPage extends ConsumerWidget {
     return ProgressWidget(center: center);
   }
 
-  Widget addTodoButton(TodosProvider provider, AuthProvider authProvider) {
+  Widget addTodoButton(TodosService provider, AuthProvider authProvider) {
     return MainButton(
       onTap: () async {
         await addTodo(provider, authProvider);
@@ -256,7 +252,8 @@ class TodosPage extends ConsumerWidget {
             TextI(title: element.todo.number.toString()),
             TextI(title: element.todo.title),
             TextI(title: element.todo.state.name),
-            TextI(title: element.todo.createdAt.toString()),
+            TextI(
+                title: DateParser.formattedLocaleDate(element.todo.createdAt)),
           ],
         ),
       );

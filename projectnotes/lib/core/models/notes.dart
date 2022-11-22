@@ -1,85 +1,82 @@
-/* import 'dart:convert';
+import 'dart:convert';
 
-class Note {
+class Notes {
   final String id;
-  final String? uid;
-  final String? body;
-  final String? title;
-  final DateTime? updateAt;
-
-  Note({
+  final String title;
+  final String body;
+  final DateTime createdAt;
+  final String userId;
+  Notes({
     required this.id,
-    this.uid,
-    this.body,
-    this.title,
-    this.updateAt,
+    required this.title,
+    required this.body,
+    required this.createdAt,
+    required this.userId,
   });
 
-  Note copyWith({
+  Notes copyWith({
     String? id,
-    String? uid,
-    String? body,
     String? title,
-    DateTime? updateAt,
+    String? body,
+    DateTime? createdAt,
+    String? userId,
   }) {
-    return Note(
+    return Notes(
       id: id ?? this.id,
-      uid: uid ?? this.uid,
-      body: body ?? this.body,
       title: title ?? this.title,
-      updateAt: updateAt ?? this.updateAt,
+      body: body ?? this.body,
+      createdAt: createdAt ?? this.createdAt,
+      userId: userId ?? this.userId,
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
       'id': id,
-      'uid': uid,
-      'body': body,
       'title': title,
-      'updateAt': updateAt?.toString(),
+      'body': body,
+      'createdAt': createdAt.toString(),
+      'userId': userId,
     };
   }
 
-  factory Note.fromMap(Map<String, dynamic> map) {
-    return Note(
+  factory Notes.fromMap(Map<String, dynamic> map) {
+    return Notes(
       id: map['id'] ?? '',
-      uid: map['uid'],
-      body: map['body'],
-      title: map['title'],
-      updateAt:
-          map['updateAt'] != null ? DateTime.parse(map['updateAt']) : null,
+      title: map['title'] ?? '',
+      body: map['body'] ?? '',
+      createdAt: DateTime.parse(map['createdAt']),
+      userId: map['userId'] ?? '',
     );
   }
 
   String toJson() => json.encode(toMap());
 
-  factory Note.fromJson(String source) => Note.fromMap(json.decode(source));
+  factory Notes.fromJson(String source) => Notes.fromMap(json.decode(source));
 
   @override
   String toString() {
-    return 'Note(id: $id, uid: $uid, body: $body, title: $title, updateAt: $updateAt)';
+    return 'Notes(id: $id, title: $title, body: $body, createdAt: $createdAt, userId: $userId)';
   }
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
-    return other is Note &&
+    return other is Notes &&
         other.id == id &&
-        other.uid == uid &&
-        other.body == body &&
         other.title == title &&
-        other.updateAt == updateAt;
+        other.body == body &&
+        other.createdAt == createdAt &&
+        other.userId == userId;
   }
 
   @override
   int get hashCode {
     return id.hashCode ^
-        uid.hashCode ^
-        body.hashCode ^
         title.hashCode ^
-        updateAt.hashCode;
+        body.hashCode ^
+        createdAt.hashCode ^
+        userId.hashCode;
   }
-} */
-class Notes{}
+}
